@@ -34,3 +34,12 @@ Concept a apprendre :
 - Demmarage de l'applicatin web (appele d'une methode au premiere appelle de FrontServletController dans void Init() ou ContextListener)
 
 Objectif : scanner le projet qui contient l'annotation Controller et au premier chargement de l'app dans void Init() boucler 
+
+=========== 19/06/16 ==========================
+SPRINT 2:
+
+- Creer class annotation pour associe une methode et un url (target = methode)
+- Output : afficher dans une page :  url + controller + methode associer
+    ex : /dept/new -> DeptController -> create
+- Lever execption url non supporter
+    - si non supporter afficher tous les url supporter
