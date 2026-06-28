@@ -2,7 +2,7 @@
 
 ======== 09/06/2026 ===============
 
-SPRINT 0 (j'imagine que c'est "SPRINT 0")
+SPRINT 0 
 Structure :
 
 REPERTOIRE 2 - FRAMEWORK (la bibliothèque)
@@ -43,3 +43,23 @@ SPRINT 2:
     ex : /dept/new -> DeptController -> create
 - Lever execption url non supporter
     - si non supporter afficher tous les url supporter
+
+    m commit sprint2 : 
+    - Création de l'annotation @RequestMapping"
+    - Scanner les méthodes des contrôleurs"
+    - Mapping URL → Contrôleur → Méthode"
+    - Affichage des URLs supportées"
+    - Gestion des erreurs 404 avec liste des URLs"
+
+============ 23/06/26 ===========================
+SPRINT 3a: Enrichissement de SPRINT 2
+        - Gestion de GET/POST dans les mapping
+        ex : 1. @RequestMapping("/test", "GET")
+             2. @RequestMapping("/test", "GET")
+        Map<url,MethodeInfo> 
+        Methode 1 : Concatener l'url 
+        Methode 2 : Builder un autre class : UrlMethode:- url
+                                                        - methode il faut surcharger un methode equals pour l'attribue     methode
+        C'est a dire l'annotation @RequestMapping doit prendre une deuxieme attribue methode
+SPRINT 3b: 
+        - il faut executer le methode appeler par l'url 

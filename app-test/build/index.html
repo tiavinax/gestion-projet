@@ -2,22 +2,47 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>App Test - Framework MVC</title>
+    <title>App Test - Sprint 2</title>
     <style>
         body { font-family: Arial; padding: 50px; text-align: center; background: #f5f7fa; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         h1 { color: #2c3e50; }
-        .btn { display: inline-block; background: #3498db; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; margin-top: 20px; }
+        .badge { display: inline-block; background: #3498db; color: white; padding: 4px 14px; border-radius: 20px; font-size: 14px; }
+        .btn { display: inline-block; background: #3498db; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; margin: 10px; }
         .btn:hover { background: #2980b9; }
+        .btn-green { background: #27ae60; }
+        .btn-green:hover { background: #219a52; }
         .status { color: #27ae60; font-weight: bold; }
+        .features { text-align: left; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; }
+        .features li { margin: 8px 0; }
+        code { background: #ecf0f1; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Application Test</h1>
-        <p>Framework MVC Artisanal - Sprint 1</p>
-        <p class="status">✅ Scanner automatique des @Controller</p>
-        <a href="/app-test/liste_controller.jsp" class="btn">📋 Voir les contrôleurs</a>
+        <h1>Application Test</h1>
+        <p>Framework MVC Artisanal - <span class="badge">Sprint 2</span></p>
+        <p class="status">@RequestMapping - Mapping URL → Méthodes</p>
+        
+        <div class="features">
+            <h3> Fonctionnalités :</h3>
+            <ul>
+                <li>✅ Scanner automatique des <code>@Controller</code></li>
+                <li>✅ Mapping URL avec <code>@RequestMapping</code></li>
+                <li>✅ URLs supportées affichées dans une page</li>
+                <li>✅ Gestion des erreurs (404 amélioré)</li>
+            </ul>
+        </div>
+        
+        <div>
+            <a href="/app-test/" class="btn">Voir les mappings</a>
+            <a href="/app-test/test/hello" class="btn btn-green">Tester /test/hello</a>
+            <a href="/app-test/app/hello" class="btn btn-green">Tester /app/hello</a>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 12px; color: #95a5a6;">
+            URLs supportées listées automatiquement
+        </p>
     </div>
 </body>
 </html>

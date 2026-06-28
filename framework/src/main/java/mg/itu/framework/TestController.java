@@ -2,8 +2,16 @@ package mg.itu.framework;
 
 @Controller("test")
 public class TestController {
-    // Ce contrôleur sera automatiquement détecté
-    public String execute() {
-        return "test_view";
+    
+    @RequestMapping("/test/hello")
+    public String hello() {
+        System.out.println("Méthode hello() appelée");
+        return "mappings";
+    }
+    
+    @RequestMapping("/test/info")
+    public String info() {
+        System.out.println("Méthode info() appelée");
+        return "mappings";
     }
 }
