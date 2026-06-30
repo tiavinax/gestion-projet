@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>App Test - Sprint 2</title>
+    <title>App Test - Sprint 3</title>
     <style>
         body { font-family: Arial; padding: 50px; text-align: center; background: #f5f7fa; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
@@ -12,36 +12,68 @@
         .btn:hover { background: #2980b9; }
         .btn-green { background: #27ae60; }
         .btn-green:hover { background: #219a52; }
-        .status { color: #27ae60; font-weight: bold; }
+        .btn-orange { background: #e67e22; }
+        .btn-orange:hover { background: #d35400; }
         .features { text-align: left; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px; }
         .features li { margin: 8px 0; }
         code { background: #ecf0f1; padding: 2px 6px; border-radius: 4px; }
+        .form-test { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            text-align: center;
+        }
+        .form-test input[type="submit"] {
+            background: #e67e22;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-test input[type="submit"]:hover {
+            background: #d35400;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Application Test</h1>
-        <p>Framework MVC Artisanal - <span class="badge">Sprint 2</span></p>
-        <p class="status">@RequestMapping - Mapping URL → Méthodes</p>
+        <p>Framework MVC Artisanal - <span class="badge">Sprint 3</span></p>
+        <p style="color: #27ae60;">✅ Gestion des méthodes HTTP (GET/POST)</p>
         
         <div class="features">
-            <h3> Fonctionnalités :</h3>
+            <h3>Fonctionnalités :</h3>
             <ul>
-                <li>✅ Scanner automatique des <code>@Controller</code></li>
-                <li>✅ Mapping URL avec <code>@RequestMapping</code></li>
-                <li>✅ URLs supportées affichées dans une page</li>
-                <li>✅ Gestion des erreurs (404 amélioré)</li>
+                <li>Scanner automatique des <code>@Controller</code></li>
+                <li>Mapping URL avec <code>@RequestMapping</code></li>
+                <li>Gestion des méthodes <code>GET</code> et <code>POST</code></li>
+                <li>URLs supportées affichées avec leur méthode</li>
+                <li>Gestion des erreurs (404 amélioré)</li>
             </ul>
         </div>
         
         <div>
-            <a href="/app-test/" class="btn">Voir les mappings</a>
-            <a href="/app-test/test/hello" class="btn btn-green">Tester /test/hello</a>
-            <a href="/app-test/app/hello" class="btn btn-green">Tester /app/hello</a>
+            <a href="/app-test/" class="btn">📋 Voir les mappings</a>
+            <a href="/app-test/app/hello" class="btn btn-green">🧪 GET /app/hello</a>
+            <a href="/app-test/app/info" class="btn btn-green">🧪 GET /app/info</a>
+        </div>
+        
+        <!-- Formulaire pour tester POST -->
+        <div class="form-test">
+            <h3>🧪 Tester POST</h3>
+            <form action="/app-test/app/hello" method="POST">
+                <input type="submit" value="📤 Envoyer POST /app/hello">
+            </form>
+            <p style="font-size: 12px; color: #95a5a6; margin-top: 10px;">
+                Cliquez sur le bouton pour envoyer une requête POST
+            </p>
         </div>
         
         <p style="margin-top: 20px; font-size: 12px; color: #95a5a6;">
-            URLs supportées listées automatiquement
+            URLs supportées listées automatiquement avec leurs méthodes HTTP
         </p>
     </div>
 </body>

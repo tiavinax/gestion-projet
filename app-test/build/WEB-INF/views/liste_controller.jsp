@@ -144,17 +144,17 @@
 <body>
     <div class="container">
         <h1>
-            📋 Liste des Contrôleurs 
+            Liste des Contrôleurs 
             <span class="badge">Sprint 1</span>
         </h1>
         
         <div class="info-bar">
             <div>
-                <span>📦 Nombre total : <strong><%= request.getAttribute("totalControllers") %></strong> contrôleur(s)</span>
+                <span>Nombre total : <strong><%= request.getAttribute("totalControllers") %></strong> contrôleur(s)</span>
                 <span class="spring-badge">@Controller</span>
             </div>
             <div>
-                <span class="time">🕐 <%= new java.util.Date() %></span>
+                <span class="time"><%= new java.util.Date() %></span>
             </div>
         </div>
         
@@ -163,7 +163,7 @@
             if (controllers == null || controllers.isEmpty()) {
         %>
             <div class="empty-state">
-                <div class="icon">🔍</div>
+                <div class="icon"></div>
                 <h3>Aucun contrôleur trouvé</h3>
                 <p>Ajoutez l'annotation <code>@Controller</code> à vos classes.</p>
             </div>
@@ -188,7 +188,7 @@
                                 <div class="controller-class"><%= controller.getName() %></div>
                             </div>
                         </div>
-                        <span style="font-size: 12px; color: #27ae60;">✅ chargé</span>
+                        <span style="font-size: 12px; color: #27ae60;">chargé</span>
                     </li>
                 <%
                     }

@@ -5,12 +5,10 @@ import java.lang.reflect.Method;
 public class MethodInfo {
     private Class<?> controllerClass;
     private Method method;
-    private String url;
     
-    public MethodInfo(Class<?> controllerClass, Method method, String url) {
+    public MethodInfo(Class<?> controllerClass, Method method) {
         this.controllerClass = controllerClass;
         this.method = method;
-        this.url = url;
     }
     
     public Class<?> getControllerClass() {
@@ -19,10 +17,6 @@ public class MethodInfo {
     
     public Method getMethod() {
         return method;
-    }
-    
-    public String getUrl() {
-        return url;
     }
     
     public String getControllerName() {
@@ -35,6 +29,6 @@ public class MethodInfo {
     
     @Override
     public String toString() {
-        return url + " → " + getControllerName() + "." + getMethodName() + "()";
+        return getControllerName() + "." + getMethodName() + "()";
     }
 }

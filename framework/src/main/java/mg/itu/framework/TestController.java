@@ -1,17 +1,41 @@
-package mg.itu.framework;
+// package mg.itu.framework;
 
-@Controller("test")
-public class TestController {
+// import mg.itu.framework.Controller;
+// import mg.itu.framework.RequestMapping;
+// import jakarta.servlet.http.HttpServletRequest;
+
+// @Controller("Test")
+// public class TestController {
     
-    @RequestMapping("/test/hello")
-    public String hello() {
-        System.out.println("Méthode hello() appelée");
-        return "mappings";
-    }
+//     @RequestMapping(value = "/test/info", method = "GET")
+//     public String infoGet(HttpServletRequest request) {
+//         System.out.println("GET /app/info appele");
+        
+//         // Ajouter des attributs pour la JSP
+//         request.setAttribute("message", "GET /app/info a ete appele");
+//         request.setAttribute("fomba", "GET");
+//         request.setAttribute("timestamp", new java.util.Date());
+//         request.setAttribute("status", "success");
+        
+//         return "mappings";
+//     }
     
-    @RequestMapping("/test/info")
-    public String info() {
-        System.out.println("Méthode info() appelée");
-        return "mappings";
-    }
-}
+//     @RequestMapping(value = "/test/info", method = "POST")
+//     public String infoPost(HttpServletRequest request) {
+//         System.out.println("POST /app/info appele");
+        
+//         // Ajouter des attributs pour la JSP
+//         request.setAttribute("message", "POST /app/info a ete appele");
+//         request.setAttribute("fomba", "POST");
+//         request.setAttribute("timestamp", new java.util.Date());
+//         request.setAttribute("status", "success");
+        
+//         // Récupérer les paramètres POST
+//         String nom = request.getParameter("nom");
+//         if (nom != null) {
+//             request.setAttribute("nom", nom);
+//         }
+        
+//         return "mappings";
+//     }
+// }

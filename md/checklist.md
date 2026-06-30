@@ -58,3 +58,20 @@
 - [x] Page web affiche la liste des @Controller
 - [x] Liste contient les classes du framework ET de l'app-test
 - [x] Framework et app-test communiquent correctement
+
+
+# SPRINT 3 - Gestion des méthodes HTTP (GET/POST)
+
+## Objectif
+- Ajouter la gestion des méthodes HTTP (GET, POST) dans le mapping
+- Utiliser une classe UrlMethod comme clé du Map
+
+## Tâches
+- [ ] 1. Créer la classe UrlMethod avec equals() et hashCode()
+- [ ] 2. Modifier l'annotation @RequestMapping avec attribut "method"
+- [ ] 3. Modifier MethodInfo (enlever url, garder seulement controller + method)
+- [ ] 4. Modifier le scan pour utiliser UrlMethod comme clé
+- [ ] 5. Modifier le FrontController pour la recherche
+- [ ] 6. Mettre à jour l'affichage des mappings
+- [ ] 7. Gérer les erreurs (méthode non supportée)
+- [ ] 8. Tester avec GET et POST

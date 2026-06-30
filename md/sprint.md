@@ -63,3 +63,6 @@ SPRINT 3a: Enrichissement de SPRINT 2
         C'est a dire l'annotation @RequestMapping doit prendre une deuxieme attribue methode
 SPRINT 3b: 
         - il faut executer le methode appeler par l'url 
+
+============ 30/06/26 ===========================
+SPRINT 4:
