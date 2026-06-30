@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*, mg.itu.framework.UrlMethod, mg.itu.framework.MethodInfo" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -328,6 +329,30 @@
 </head>
 <body>
     <div class="container">
+    <%
+    List<String> mappingErrors = (List<String>) request.getAttribute("mappingErrors");
+    if (mappingErrors != null && !mappingErrors.isEmpty()) {
+    %>
+    <div style="background: #fde8e8; border: 2px solid #e74c3c; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <h3 style="color: #e74c3c;">Conflits de mapping détectés</h3>
+        <ul style="list-style: none; margin-top: 10px;">
+            <%
+                for (String error : mappingErrors) {
+            %>
+                <li style="padding: 5px 0; border-bottom: 1px solid #f5c6c6; font-family: monospace; font-size: 13px; color: #c0392b;">
+                    <%= error %>
+                </li>
+            <%
+                }
+            %>
+        </ul>
+        <p style="color: #e74c3c; font-weight: bold; margin-top: 10px;">
+            Des conflits existent. Les mappings en conflit ont été écrasés.
+        </p>
+    </div>
+    <%
+    }
+    %>
         <h1>
             URL Mappings
             <span class="badge">Sprint 3</span>

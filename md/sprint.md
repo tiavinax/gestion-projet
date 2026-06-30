@@ -65,4 +65,4 @@ SPRINT 3b:
         - il faut executer le methode appeler par l'url 
 
 ============ 30/06/26 ===========================
-SPRINT 4:
+SPRINT 4: Utiliser une class Listner qui a pour role d'appeler void init() au chargment de l'application

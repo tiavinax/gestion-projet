@@ -12,20 +12,20 @@ public class FrontController extends HttpServlet {
 
     private List<Class<?>> controllers = new ArrayList<>();
     private Map<UrlMethod, MethodInfo> urlMapping = new HashMap<>();
+    private List<String> mappingErrors = new ArrayList<>();
+    private boolean hasMappingConflicts = false;
 
     @Override
     public void init() throws ServletException {
-        System.out.println("========================================");
-        System.out.println("FRAMEWORK MVC - SPRINT 3");
-        System.out.println("========================================");
+        System.out.println("FRAMEWORK MVC");
 
         try {
             scanControllers();
-            scanMethods();
+            scanMethods(); 
             displayMappings();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServletException("Erreur lors du scan", e);
+            throw new ServletException("Erreur lors du scan des mappings", e);
         }
     }
 
@@ -115,9 +115,10 @@ public class FrontController extends HttpServlet {
     }
 
     private void scanMethods() {
-        System.out.println("========================================");
         System.out.println("Scan des methodes @RequestMapping");
-        System.out.println("========================================");
+
+        mappingErrors.clear();
+        hasMappingConflicts = false;
 
         for (Class<?> controllerClass : controllers) {
             Method[] methods = controllerClass.getDeclaredMethods();
@@ -134,22 +135,27 @@ public class FrontController extends HttpServlet {
 
                     UrlMethod key = new UrlMethod(url, httpMethod);
                     MethodInfo info = new MethodInfo(controllerClass, method);
-                    urlMapping.put(key, info);
 
-                    System.out.println("Mapping: " + url + " (" + httpMethod + ") -> " +
-                            controllerClass.getSimpleName() + "." + method.getName() + "()");
+                    // Vérification des doublons
+                    if (urlMapping.containsKey(key)) {
+                        MethodInfo existing = urlMapping.get(key);
+                        String error = String.format(
+                                "CONFLIT: %s (%s) -> %s.%s() et %s.%s()",
+                                url, httpMethod,
+                                existing.getControllerName(), existing.getMethodName(),
+                                controllerClass.getSimpleName(), method.getName());
+                        mappingErrors.add(error);
+                        hasMappingConflicts = true;
+                    }
+
+                    urlMapping.put(key, info);
                 }
             }
         }
-
-        System.out.println("Total mappings: " + urlMapping.size());
-        System.out.println("========================================");
     }
 
     private void displayMappings() {
-        System.out.println("========================================");
         System.out.println("URLs supportees");
-        System.out.println("========================================");
 
         if (urlMapping.isEmpty()) {
             System.out.println("Aucun mapping");
@@ -163,7 +169,6 @@ public class FrontController extends HttpServlet {
             }
         }
         System.out.println("Total: " + urlMapping.size());
-        System.out.println("========================================");
     }
 
     @Override
@@ -186,6 +191,12 @@ public class FrontController extends HttpServlet {
 
         System.out.println("Requete: " + path + " (" + httpMethod + ")");
 
+        // Si des conflits existent, rediriger vers la page d'erreur
+        if (hasMappingConflicts) {
+            showConflictErrorPage(request, response, path, httpMethod);
+            return;
+        }
+
         // Page d'accueil
         if ("/".equals(path) || "".equals(path) || path == null) {
             request.setAttribute("urlMapping", urlMapping);
@@ -193,6 +204,7 @@ public class FrontController extends HttpServlet {
             request.setAttribute("totalControllers", controllers.size());
             request.setAttribute("serverTime", new java.util.Date());
             request.setAttribute("isError", false);
+            request.setAttribute("mappingErrors", mappingErrors);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/mappings.jsp");
             dispatcher.forward(request, response);
@@ -203,7 +215,6 @@ public class FrontController extends HttpServlet {
         UrlMethod key = new UrlMethod(path, httpMethod);
 
         if (urlMapping.containsKey(key)) {
-            // URL + Methode HTTP trouvee
             executeMethod(request, response, key);
         } else {
             // Verifier si l'URL existe avec une autre methode
@@ -215,10 +226,8 @@ public class FrontController extends HttpServlet {
             }
 
             if (!availableMethods.isEmpty()) {
-                // URL existe mais pas pour cette methode HTTP
                 showMethodErrorPage(request, response, path, httpMethod, availableMethods);
             } else {
-                // URL n'existe pas du tout
                 showErrorPage(request, response, path);
             }
         }
@@ -236,8 +245,7 @@ public class FrontController extends HttpServlet {
 
             // Vérifier si la méthode accepte HttpServletRequest
             Object result;
-            if (method.getParameterCount() > 0 &&
-                    method.getParameterTypes()[0].equals(HttpServletRequest.class)) {
+            if (method.getParameterCount() > 0 && method.getParameterTypes()[0].equals(HttpServletRequest.class)) {
                 // Appeler avec le paramètre request
                 result = method.invoke(controller, request);
             } else {
@@ -308,6 +316,24 @@ public class FrontController extends HttpServlet {
         request.setAttribute("isMethodError", false);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/mappings.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    private void showConflictErrorPage(HttpServletRequest request, HttpServletResponse response, String path,
+            String httpMethod)
+            throws ServletException, IOException {
+
+        request.setAttribute("urlMapping", urlMapping);
+        request.setAttribute("totalUrls", urlMapping.size());
+        request.setAttribute("totalControllers", controllers.size());
+        request.setAttribute("serverTime", new java.util.Date());
+        request.setAttribute("invalidUrl", path);
+        request.setAttribute("requestedMethod", httpMethod);
+        request.setAttribute("mappingErrors", mappingErrors);
+        request.setAttribute("isError", true);
+        request.setAttribute("isConflict", true);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/errors/erreur.jsp");
         dispatcher.forward(request, response);
     }
 }

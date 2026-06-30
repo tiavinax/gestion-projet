@@ -7,7 +7,6 @@
     
     <display-name>App Test - Framework MVC Artisanal</display-name>
     
-    <!-- Utiliser le FrontController du framework -->
     <servlet>
         <servlet-name>FrontController</servlet-name>
         <servlet-class>mg.itu.framework.FrontController</servlet-class>
