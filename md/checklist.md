@@ -67,11 +67,31 @@
 - Utiliser une classe UrlMethod comme clé du Map
 
 ## Tâches
-- [ ] 1. Créer la classe UrlMethod avec equals() et hashCode()
-- [ ] 2. Modifier l'annotation @RequestMapping avec attribut "method"
-- [ ] 3. Modifier MethodInfo (enlever url, garder seulement controller + method)
-- [ ] 4. Modifier le scan pour utiliser UrlMethod comme clé
-- [ ] 5. Modifier le FrontController pour la recherche
-- [ ] 6. Mettre à jour l'affichage des mappings
-- [ ] 7. Gérer les erreurs (méthode non supportée)
-- [ ] 8. Tester avec GET et POST
+- [ok] 1. Créer la classe UrlMethod avec equals() et hashCode()
+- [ok] 2. Modifier l'annotation @RequestMapping avec attribut "method"
+- [ok] 3. Modifier MethodInfo (enlever url, garder seulement controller + method)
+- [ok] 4. Modifier le scan pour utiliser UrlMethod comme clé
+- [ok] 5. Modifier le FrontController pour la recherche
+- [ok] 6. Mettre à jour l'affichage des mappings
+- [ok] 7. Gérer les erreurs (méthode non supportée)
+- [ok] 8. Tester avec GET et POST
+
+
+# SPRINT 4 - Utilisation d'un ContextListener
+
+## Objectif
+Déplacer l'initialisation du framework du FrontController vers un ServletContextListener
+
+## Tâches
+- [ ] 1. Créer la classe FrameworkInitializer implements ServletContextListener
+- [ ] 2. Déplacer la logique de scan dans contextInitialized()
+- [ ] 3. Stocker les données dans ServletContext (urlMapping, controllers, errors)
+- [ ] 4. Modifier FrontController pour récupérer les données depuis ServletContext
+- [ ] 5. Supprimer scanMethods() de FrontController
+- [ ] 6. Déclarer le listener dans web.xml
+- [ ] 7. Tester le bon fonctionnement
+
+## Structure
+- Initialisation : FrameworkInitializer (ContextListener)
+- Routing : FrontController (Servlet)
+- Stockage : ServletContext
