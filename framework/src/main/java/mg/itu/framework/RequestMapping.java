@@ -6,5 +6,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface RequestMapping {
     String value();                    // URL
-    String method() default "GET";     // GET, POST, PUT, DELETE
+    String method() default "GET";     
 }

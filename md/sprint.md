@@ -66,3 +66,26 @@ SPRINT 3b:
 
 ============ 30/06/26 ===========================
 SPRINT 4: Utiliser une ContextListner une class Listner qui a pour role d'appeler void init() au chargment de l'application
+
+============ 02/07/26 ===========================
+SPRINT 5: Comment envoyer les donner vers une vue 
+    Exemple : dans spring mvc :
+    
+    @GetMapping("/secretariat/profil/{id}")
+    public String profil(@PathVariable Integer id, Model model) {
+        model.addAttribute("eleve", eleveService.getProfil(id));
+        model.addAttribute("pageTitle", "Profil de l'Élève");
+        return "Secretaire/profil_eleve";
+    }
+    
+    methode : 
+    ┌─────────────────────────────────────────────────────┐
+    │                    ModelView                        │
+    │  ┌─────────────┐  ┌─────────────────────────────┐   │
+    │  │ viewName    │  │ Map<String, Object> data    │   │
+    │  │ "mappings"  │  │  "message" → "Hello"        │   │
+    │  └─────────────┘  │  "timestamp" → Date         │   │
+    │                    │  "eleve" → Eleve           │  │
+    │                    └─────────────────────────────┘  │
+    └─────────────────────────────────────────────────────┘
+    Il faut conctaner le /emp/list en /emp/list.jsp

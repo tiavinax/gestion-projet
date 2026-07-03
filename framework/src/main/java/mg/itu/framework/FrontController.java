@@ -16,28 +16,35 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
-        
+
         this.controllers = (List<Class<?>>) context.getAttribute("controllers");
         this.urlMapping = (Map<UrlMethod, MethodInfo>) context.getAttribute("urlMapping");
         this.mappingErrors = (List<String>) context.getAttribute("mappingErrors");
-        this.hasMappingConflicts = (boolean) context.getAttribute("hasMappingConflicts");
+
+        Boolean conflicts = (Boolean) context.getAttribute("hasMappingConflicts");
+        this.hasMappingConflicts = conflicts != null && conflicts;
+
+        // Vérifier que tout est bien initialisé
+        if (this.controllers == null || this.urlMapping == null) {
+            throw new ServletException("Framework non initialisé. Vérifiez que FrameworkInitializer est correctement déclaré dans web.xml");
+        }
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         processRequest(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) 
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         processRequest(req, resp);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) 
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String path = request.getServletPath();
         String httpMethod = request.getMethod();
 
@@ -68,21 +75,21 @@ public class FrontController extends HttpServlet {
         return path == null || "/".equals(path) || "".equals(path);
     }
 
-    private void handleNotFound(HttpServletRequest request, HttpServletResponse response, 
-                                String path, String httpMethod) 
+    private void handleNotFound(HttpServletRequest request, HttpServletResponse response,
+            String path, String httpMethod)
             throws ServletException, IOException {
-        
+
         List<String> availableMethods = getAvailableMethods(path);
-        
+
         request.setAttribute("invalidUrl", path);
         request.setAttribute("isError", true);
         request.setAttribute("isMethodError", !availableMethods.isEmpty());
-        
+
         if (!availableMethods.isEmpty()) {
             request.setAttribute("requestedMethod", httpMethod);
             request.setAttribute("availableMethods", availableMethods);
         }
-        
+
         render(request, response, "/WEB-INF/views/mappings.jsp");
     }
 
@@ -96,15 +103,15 @@ public class FrontController extends HttpServlet {
         return methods;
     }
 
-    private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key) 
+    private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key)
             throws ServletException, IOException {
-        
+
         try {
             MethodInfo info = urlMapping.get(key);
             Method method = info.getMethod();
             Object controller = info.getControllerClass().getDeclaredConstructor().newInstance();
 
-            Object result = invokeMethod(controller, method, request);
+            Object result = invokeMethod(controller, method, request, response);
 
             if (result instanceof String) {
                 String viewName = (String) result;
@@ -122,15 +129,20 @@ public class FrontController extends HttpServlet {
         }
     }
 
-    private Object invokeMethod(Object controller, Method method, HttpServletRequest request) 
+    private Object invokeMethod(Object controller, Method method,
+            HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        
+
         Class<?>[] paramTypes = method.getParameterTypes();
-        
+
         if (paramTypes.length == 0) {
             return method.invoke(controller);
         } else if (paramTypes.length == 1 && paramTypes[0].equals(HttpServletRequest.class)) {
             return method.invoke(controller, request);
+        } else if (paramTypes.length == 2 &&
+                paramTypes[0].equals(HttpServletRequest.class) &&
+                paramTypes[1].equals(HttpServletResponse.class)) {
+            return method.invoke(controller, request, response);
         } else {
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
@@ -146,9 +158,9 @@ public class FrontController extends HttpServlet {
         }
     }
 
-    private void writeRawResponse(HttpServletResponse response, UrlMethod key, MethodInfo info) 
+    private void writeRawResponse(HttpServletResponse response, UrlMethod key, MethodInfo info)
             throws IOException {
-        
+
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<h1>Methode executee</h1>");
@@ -158,9 +170,9 @@ public class FrontController extends HttpServlet {
         out.println("<p><a href='" + getServletContext().getContextPath() + "/'>Retour</a></p>");
     }
 
-    private void render(HttpServletRequest request, HttpServletResponse response, String viewPath) 
+    private void render(HttpServletRequest request, HttpServletResponse response, String viewPath)
             throws ServletException, IOException {
-        
+
         request.setAttribute("urlMapping", urlMapping);
         request.setAttribute("totalUrls", urlMapping.size());
         request.setAttribute("totalControllers", controllers.size());
