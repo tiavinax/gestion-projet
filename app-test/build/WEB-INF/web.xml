@@ -5,7 +5,7 @@
          https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
     
-    <display-name>App Test - Sprint 4</display-name>
+    <display-name>App Test - Sprint 5</display-name>
     
     <listener>
         <listener-class>mg.itu.framework.FrameworkInitializer</listener-class>

@@ -23,11 +23,6 @@ public class FrontController extends HttpServlet {
 
         Boolean conflicts = (Boolean) context.getAttribute("hasMappingConflicts");
         this.hasMappingConflicts = conflicts != null && conflicts;
-
-        // Vérifier que tout est bien initialisé
-        if (this.controllers == null || this.urlMapping == null) {
-            throw new ServletException("Framework non initialisé. Vérifiez que FrameworkInitializer est correctement déclaré dans web.xml");
-        }
     }
 
     @Override
@@ -46,22 +41,34 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getServletPath();
-        String httpMethod = request.getMethod();
 
+        // 1. Conflits de mapping
         if (hasMappingConflicts) {
             request.setAttribute("mappingErrors", mappingErrors);
             request.setAttribute("invalidUrl", path);
-            request.setAttribute("requestedMethod", httpMethod);
             render(request, response, "/WEB-INF/views/errors/erreur.jsp");
             return;
         }
 
+        // 2. Page d'accueil → route / vers SprintController.home()
         if (isHomePage(path)) {
-            request.setAttribute("isError", false);
-            render(request, response, "/WEB-INF/views/mappings.jsp");
-            return;
+            // Laisser le FrontController traiter la route /
+            // Elle est dans urlMapping grâce à @RequestMapping("/")
         }
 
+        // 3. Fichiers statiques
+        if (isStaticResource(path)) {
+            try {
+                RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+                dispatcher.forward(request, response);
+                return;
+            } catch (Exception e) {
+                // Ignorer
+            }
+        }
+
+        // 4. Routes dynamiques
+        String httpMethod = request.getMethod();
         UrlMethod key = new UrlMethod(path, httpMethod);
 
         if (urlMapping.containsKey(key)) {
@@ -75,6 +82,19 @@ public class FrontController extends HttpServlet {
         return path == null || "/".equals(path) || "".equals(path);
     }
 
+    private boolean isStaticResource(String path) {
+        return path.endsWith(".html") ||
+                path.endsWith(".css") ||
+                path.endsWith(".js") ||
+                path.endsWith(".png") ||
+                path.endsWith(".jpg") ||
+                path.endsWith(".jpeg") ||
+                path.endsWith(".gif") ||
+                path.endsWith(".svg") ||
+                path.endsWith(".ico") ||
+                path.endsWith(".webp");
+    }
+
     private void handleNotFound(HttpServletRequest request, HttpServletResponse response,
             String path, String httpMethod)
             throws ServletException, IOException {
@@ -83,6 +103,7 @@ public class FrontController extends HttpServlet {
 
         request.setAttribute("invalidUrl", path);
         request.setAttribute("isError", true);
+        request.setAttribute("isSingle", false);
         request.setAttribute("isMethodError", !availableMethods.isEmpty());
 
         if (!availableMethods.isEmpty()) {
@@ -90,7 +111,7 @@ public class FrontController extends HttpServlet {
             request.setAttribute("availableMethods", availableMethods);
         }
 
-        render(request, response, "/WEB-INF/views/mappings.jsp");
+        render(request, response, "/WEB-INF/views/errors/404.jsp");
     }
 
     private List<String> getAvailableMethods(String path) {
@@ -113,13 +134,28 @@ public class FrontController extends HttpServlet {
 
             Object result = invokeMethod(controller, method, request, response);
 
-            if (result instanceof String) {
-                String viewName = (String) result;
+            if (result instanceof ModelView) {
+                ModelView mv = (ModelView) result;
+
+                for (Map.Entry<String, Object> entry : mv.getData().entrySet()) {
+                    request.setAttribute(entry.getKey(), entry.getValue());
+                }
+
+                String viewPath = resolveView(mv.getViewName());
                 request.setAttribute("currentUrl", key.getUrl());
                 request.setAttribute("currentMethod", key.getMethod());
                 request.setAttribute("isError", false);
                 request.setAttribute("isSingle", true);
-                render(request, response, "/WEB-INF/views/" + viewName + ".jsp");
+                render(request, response, viewPath);
+
+            } else if (result instanceof String) {
+                String viewPath = resolveView((String) result);
+                request.setAttribute("currentUrl", key.getUrl());
+                request.setAttribute("currentMethod", key.getMethod());
+                request.setAttribute("isError", false);
+                request.setAttribute("isSingle", true);
+                render(request, response, viewPath);
+
             } else {
                 writeRawResponse(response, key, info);
             }
@@ -156,6 +192,16 @@ public class FrontController extends HttpServlet {
             }
             return method.invoke(controller, args);
         }
+    }
+
+    private String resolveView(String viewName) {
+        if (!viewName.startsWith("/")) {
+            viewName = "/" + viewName;
+        }
+        if (!viewName.endsWith(".jsp")) {
+            viewName = viewName + ".jsp";
+        }
+        return "/WEB-INF/views" + viewName;
     }
 
     private void writeRawResponse(HttpServletResponse response, UrlMethod key, MethodInfo info)

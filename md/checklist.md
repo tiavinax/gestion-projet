@@ -83,15 +83,31 @@
 Déplacer l'initialisation du framework du FrontController vers un ServletContextListener
 
 ## Tâches
-- [ ] 1. Créer la classe FrameworkInitializer implements ServletContextListener
-- [ ] 2. Déplacer la logique de scan dans contextInitialized()
-- [ ] 3. Stocker les données dans ServletContext (urlMapping, controllers, errors)
-- [ ] 4. Modifier FrontController pour récupérer les données depuis ServletContext
-- [ ] 5. Supprimer scanMethods() de FrontController
-- [ ] 6. Déclarer le listener dans web.xml
-- [ ] 7. Tester le bon fonctionnement
+- [ok] 1. Créer la classe FrameworkInitializer implements ServletContextListener
+- [ok] 2. Déplacer la logique de scan dans contextInitialized()
+- [ok] 3. Stocker les données dans ServletContext (urlMapping, controllers, errors)
+- [ok] 4. Modifier FrontController pour récupérer les données depuis ServletContext
+- [ok] 5. Supprimer scanMethods() de FrontController
+- [ok] 6. Déclarer le listener dans web.xml
+- [ok] 7. Tester le bon fonctionnement
 
 ## Structure
 - Initialisation : FrameworkInitializer (ContextListener)
 - Routing : FrontController (Servlet)
 - Stockage : ServletContext
+
+# SPRINT 5 - ModelView
+
+## Objectif
+Créer une classe ModelView pour encapsuler vue et données
+
+## Tâches
+- [ ] 1. Créer la classe ModelView
+- [ ] 2. Modifier FrontController pour accepter ModelView
+- [ ] 3. Gérer la résolution de vue (concaténation)
+- [ ] 4. Adapter les contrôleurs de test
+- [ ] 5. Tester avec GET et POST
+
+## Structure
+- ModelView : { viewName: String, data: Map<String, Object> }
+- Résolution : viewName → /WEB-INF/views/viewName.jsp

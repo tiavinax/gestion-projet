@@ -78,7 +78,7 @@ SPRINT 5: Comment envoyer les donner vers une vue
         return "Secretaire/profil_eleve";
     }
     
-    methode : 
+    methode : class ModelView : String viewName, Map<String, Object> data
     ┌─────────────────────────────────────────────────────┐
     │                    ModelView                        │
     │  ┌─────────────┐  ┌─────────────────────────────┐   │

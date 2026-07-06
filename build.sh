@@ -66,7 +66,7 @@ echo "   ..."
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}✅ Framework compilé avec succès !${NC}"
-echo -e "${GREEN}📦 JAR: $OUTPUT_DIR/$APP_NAME-$VERSION.jar${NC}"
+echo -e "${GREEN} JAR: $OUTPUT_DIR/$APP_NAME-$VERSION.jar${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo -e "${BLUE}Pour utiliser ce framework dans votre application de test :${NC}"

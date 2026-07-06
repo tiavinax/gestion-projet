@@ -15,13 +15,12 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}Déploiement App Test - Sprint 1${NC}"
+echo -e "${BLUE}Deploiement App Test - Sprint 5${NC}"
 echo -e "${BLUE}========================================${NC}"
 
 # Vérifier le framework JAR
 if [ ! -f "$LIB_DIR/framework-1.0.jar" ]; then
-    echo -e "${RED}❌ Erreur: framework-1.0.jar non trouvé dans $LIB_DIR${NC}"
-    echo "   Copiez-le depuis ../framework/dist/"
+    echo -e "${RED}❌ Erreur: framework-1.0.jar non trouve dans $LIB_DIR${NC}"
     exit 1
 fi
 
@@ -35,31 +34,25 @@ mkdir -p $BUILD_DIR/WEB-INF/lib
 echo -e "${BLUE}[2/5] Compilation des classes...${NC}"
 find $SRC_DIR -name "*.java" > sources.txt
 
-# Compiler avec les bons packages
 javac -cp "$LIB_DIR/framework-1.0.jar:$LIB_DIR/servlet-api.jar" \
       -d $BUILD_DIR/WEB-INF/classes @sources.txt
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Erreur de compilation${NC}"
-    cat sources.txt
     rm sources.txt
     exit 1
 fi
 
 rm sources.txt
-echo -e "${GREEN}✓ Compilation réussie${NC}"
+echo -e "${GREEN}✓ Compilation reussie${NC}"
 
-# Afficher les classes compilées
-echo -e "${BLUE}📁 Classes compilées :${NC}"
-find $BUILD_DIR/WEB-INF/classes -name "*.class" | head -10
-
-# Copier les fichiers web
+# Copier les fichiers web (JSP, CSS, HTML, etc.)
 echo -e "${BLUE}[3/5] Copie des fichiers web...${NC}"
 cp -r $WEB_DIR/* $BUILD_DIR/
 
-# Déplacer web.xml dans WEB-INF s'il est à la racine
+# Déplacer web.xml dans WEB-INF
 if [ -f "$BUILD_DIR/web.xml" ]; then
-    echo -e "${BLUE}   Déplacement de web.xml dans WEB-INF/${NC}"
+    echo -e "${BLUE}   Deplacement de web.xml dans WEB-INF/${NC}"
     mv $BUILD_DIR/web.xml $BUILD_DIR/WEB-INF/
 fi
 
@@ -68,18 +61,18 @@ echo -e "${BLUE}[4/5] Copie des librairies...${NC}"
 cp $LIB_DIR/*.jar $BUILD_DIR/WEB-INF/lib/
 
 # Créer le WAR
-echo -e "${BLUE}[5/5] Création du WAR...${NC}"
+echo -e "${BLUE}[5/5] Creation du WAR...${NC}"
 cd $BUILD_DIR
-jar -cvf $APP_NAME.war * > /dev/null
+jar -cvf $APP_NAME.war *
 cd ..
 
-echo -e "${GREEN}✓ WAR créé: $BUILD_DIR/$APP_NAME.war${NC}"
+echo -e "${GREEN}✓ WAR cree: $BUILD_DIR/$APP_NAME.war${NC}"
 
 # Déployer vers Tomcat
 cp -f $BUILD_DIR/$APP_NAME.war $TOMCAT_WEBAPPS/
 
 echo -e "${GREEN}========================================${NC}"
-echo -e "${GREEN}✅ App test déployée !${NC}"
+echo -e "${GREEN}✅ App test deployee !${NC}"
 echo -e "${GREEN}🌐 http://localhost:8080/app-test/${NC}"
 echo -e "${GREEN}========================================${NC}"
 

@@ -9,7 +9,7 @@ FRAMEWORK_JAR="dist/framework-1.0.jar"
 TEST_APP_DIR="../app-test"  # Chemin vers votre app de test
 TEST_APP_LIB="$TEST_APP_DIR/lib"
 
-echo "📦 Installation du framework vers l'application de test..."
+echo " Installation du framework vers l'application de test..."
 
 # Vérifier si le JAR existe
 if [ ! -f "$FRAMEWORK_JAR" ]; then
@@ -24,7 +24,7 @@ mkdir -p $TEST_APP_LIB
 cp $FRAMEWORK_JAR $TEST_APP_LIB/
 
 echo "✅ Framework installé dans $TEST_APP_LIB/"
-echo "📋 Votre application de test peut maintenant utiliser:"
+echo " Votre application de test peut maintenant utiliser:"
 echo "   import com.votrepackage.*;"
 
 cd ..
