@@ -1,0 +1,250 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Camber Regular", sans-serif;
+    scroll-behavior: smooth;
+    list-style: none;
+    color: #000000;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul {
+    margin-bottom: 0 !important;
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    background-color: #ffffff;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.nav {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    height: 40px;
+}
+
+.nav a {
+    text-align: center;
+    text-decoration: none;
+    transition: 0.3s ease;
+    width: 100px;
+}
+
+.nav i {
+    transition: 0.3s ease;
+}
+
+.nav-links a {
+    padding-bottom: 5px;
+    border-bottom: transparent solid 2px;
+}
+
+.nav-links a:hover {
+    color: #2178d4;
+    border-bottom: #2178d4 solid 2px;
+}
+
+.nav a:hover i {
+    font-weight: bold;
+    color: #2178d4;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f2f4f7 !important;
+}
+
+main {
+    flex: 1;
+    margin: 20px;
+    display: flex;
+    margin-top: 75px;
+    background: none;
+    gap: 20px;
+}
+
+.aside-left {
+    text-align: left;
+}
+
+.aside-right {
+    text-align: right;
+}
+
+#publications {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.publication {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+}
+
+.publication-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.publication-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.publication-header-auteur {
+    display: flex;
+    flex-direction: column;
+}
+
+.publier {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.publication-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+#publication-form textarea {
+    background-color: #f2f4f7;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    height: 45px;
+    min-height: 45px;
+    border-radius: 10px;
+    resize: vertical;
+}
+
+#publication-form textarea:focus {
+    border: none !important;
+}
+
+#publication-form input[type="submit"] {
+    padding: 10px 16px;
+    font-size: 16px;
+    border: none;
+    background-color: #2178d4;
+    color: #ffffff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.publication-footer {
+    border-top: #f2f4f7 solid 3px;
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    gap: 20px;
+}
+
+.publication-footer button {
+    padding: 10px 16px;
+    width: 50%;
+    border: none;
+    border-radius: 10px;
+    background-color: #ffffff;
+    transition: 0.3s ease;
+}
+
+.publication-footer button:hover {
+    background-color: #f2f4f7;
+}
+
+.commentaire-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.commentaire-form textarea {
+    background-color: #f2f4f7;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    width: 100%;
+    height: 45px;
+    min-height: 45px;
+    border-radius: 10px;
+    resize: vertical;
+}
+
+.commentaire-form input[type="submit"] {
+    padding: 10px 16px;
+    font-size: 16px;
+    border: none;
+    background-color: #2178d4;
+    color: #ffffff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+footer {
+    background-color: #2178d4;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    width: 100%;
+    z-index: 10;
+}
+
+footer p {
+    color: #ffffff;
+    font-family: "Camber SemiBold", sans-serif;
+}
