@@ -134,9 +134,11 @@ public class SprintController {
         mv.addAttribute("serverTime", new Date());
         mv.addAttribute("sprintName", "SPRINT 5 - ModelView");
         mv.addAttribute("sprintDesc", "Envoi de données vers une vue avec ModelView");
-        mv.addAttribute("message", "Ce message vient du contrôleur via ModelView !");
+        mv.addAttribute("message", "Coucou Mr Mbola !");
         mv.addAttribute("version", "1.0");
 
         return mv;
     }
+
+    
 }

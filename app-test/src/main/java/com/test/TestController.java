@@ -8,12 +8,14 @@ import mg.itu.framework.ModelView;
 
 @Controller("appTest")
 public class TestController {
-    
-    @RequestMapping(value = "/modelView", method = "GET")
-    public ModelView test() {
-        ModelView mv = new ModelView("modelView.jsp");
-        String message = "Hello from TestController!";
-        mv.addAttribute("message", message);
+
+    @RequestMapping(value = "/model", method = "GET")
+    public ModelView test(HttpServletRequest request) {
+        ModelView mv = new ModelView("test");
+
+        mv.addAttribute("Nombre 12", "12");
+        mv.addAttribute("test", "Salut Mr Mbola !");
+
         return mv;
     }
 }

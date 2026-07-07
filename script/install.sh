@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Basculer ver le repertoire framework
-cd framework
+
+cd ../framework
 
 # Script pour installer le framework JAR dans l'application de test
 
@@ -27,4 +28,4 @@ echo "✅ Framework installé dans $TEST_APP_LIB/"
 echo " Votre application de test peut maintenant utiliser:"
 echo "   import com.votrepackage.*;"
 
-cd ..
+cd ../script

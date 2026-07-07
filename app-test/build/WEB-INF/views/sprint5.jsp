@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="demo-box">
-                    <h3>✅ Message du contrôleur via ModelView</h3>
+                    <h3>Message du contrôleur via ModelView</h3>
                     <p>
                         <%= request.getAttribute("message") %>
                     </p>
@@ -160,7 +160,7 @@
                         </span></p>
                 </div>
 
-                <% Map<UrlMethod, MethodInfo> urlMapping = (Map<UrlMethod, MethodInfo>)
+                <!-- <% Map<UrlMethod, MethodInfo> urlMapping = (Map<UrlMethod, MethodInfo>)
                         request.getAttribute("urlMapping");
                         if (urlMapping != null && !urlMapping.isEmpty()) {
                         %>
@@ -176,7 +176,7 @@
                                 </li>
                                 <% } %>
                         </ul>
-                        <% } %>
+                        <% } %> -->
 
                             <a href="/app-test/" class="btn-back"> Retour à l'accueil</a>
                             <div class="footer"><strong>Framework MVC Artisanal</strong> &bull; Sprint 5</div>

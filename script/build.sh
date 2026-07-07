@@ -5,7 +5,7 @@
 # ============================================
 
 # Basculer ver le repertoire framework
-cd framework
+cd ../framework
 
 APP_NAME="framework"
 VERSION="1.0"
@@ -74,4 +74,4 @@ echo "1. Copier $OUTPUT_DIR/$JAR_NAME vers ../application-test/lib/"
 echo "2. Ajouter le JAR dans le classpath de l'application test"
 echo ""
 
-cd ..
+cd ../script

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd app-test
+cd ../app-test
 
 APP_NAME="app-test"
 SRC_DIR="src/main/java"
@@ -76,4 +76,4 @@ echo -e "${GREEN}✅ App test deployee !${NC}"
 echo -e "${GREEN}🌐 http://localhost:8080/app-test/${NC}"
 echo -e "${GREEN}========================================${NC}"
 
-cd ..
+cd ../script
