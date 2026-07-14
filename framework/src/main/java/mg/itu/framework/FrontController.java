@@ -140,7 +140,6 @@ public class FrontController extends HttpServlet {
             Object controller = applicationContext.getBean(controllerClass);
             
             if (controller == null) {
-                // Fallback: instancier directement
                 controller = controllerClass.getDeclaredConstructor().newInstance();
             }
 

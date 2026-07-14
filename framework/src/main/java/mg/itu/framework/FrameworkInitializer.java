@@ -40,7 +40,7 @@ public class FrameworkInitializer implements ServletContextListener {
                 injectDependencies(instance);
             }
             
-            // 6. Récupérer les contrôleurs (pour le mapping)
+            // 6. Récupérer les contrôleurs 
             for (Class<?> clazz : componentClasses) {
                 if (clazz.isAnnotationPresent(Controller.class)) {
                     controllers.add(clazz);

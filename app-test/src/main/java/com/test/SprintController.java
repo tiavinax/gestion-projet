@@ -151,15 +151,9 @@ public class SprintController {
     public ModelView sprint5b(HttpServletRequest request) {
         ModelView mv = new ModelView("sprint5b");
         
-        // Récupérer le contexte
         ApplicationContext appCtx = (ApplicationContext) request.getServletContext().getAttribute("applicationContext");
-        
-        // Récupérer les utilisateurs
         List<String> users = userService.getAllUsers();
-        
         mv.addAttribute("users", users);
-        mv.addAttribute("beans", appCtx.getBeans());
-        mv.addAttribute("totalBeans", appCtx.getBeans().size());
         
         return mv;
     }

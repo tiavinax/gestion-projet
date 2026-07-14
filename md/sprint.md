@@ -92,7 +92,6 @@ SPRINT 5:
     Il faut conctaner le /emp/list en /emp/list.jsp
 
     sprint 5b : (Module JPA) : Modifier les donnees passer au vue avec les donnees venu du SGBD
-    ex: - utiliser JDBC (.jar)
         - creer un fichier db.config 
 SPRINT 5b: Repository: Base de donner : findAll(), getById(id),etc - Utiliser un seul [Spring-Container] charger au demarrage de l'application avec Listner mais sans jamais creer le listner mais declarer dans le web.xml (listner + config-spring) (FrameworkInitializer.java) - methode : getBeans pour le context dans le Controller le Spring l'instanciation du controller ne change pas mais le controller va prendre un arguments (ApplicaitonContext appCt) et verifier lors de l'invocation du methode
 
