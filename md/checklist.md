@@ -102,12 +102,37 @@ Déplacer l'initialisation du framework du FrontController vers un ServletContex
 Créer une classe ModelView pour encapsuler vue et données
 
 ## Tâches
-- [ ] 1. Créer la classe ModelView
-- [ ] 2. Modifier FrontController pour accepter ModelView
-- [ ] 3. Gérer la résolution de vue (concaténation)
-- [ ] 4. Adapter les contrôleurs de test
-- [ ] 5. Tester avec GET et POST
+- [ok] 1. Créer la classe ModelView
+- [ok] 2. Modifier FrontController pour accepter ModelView
+- [ok] 3. Gérer la résolution de vue (concaténation)
+- [ok] 4. Adapter les contrôleurs de test
+- [ok] 5. Tester avec GET et POST
 
 ## Structure
 - ModelView : { viewName: String, data: Map<String, Object> }
 - Résolution : viewName → /WEB-INF/views/viewName.jsp
+
+# SPRINT 5b - Repository et Spring-Container
+
+## Objectif
+Créer un mini conteneur Spring qui gère l'instanciation et l'injection des dépendances
+
+## Tâches
+- [ ] 1. Créer l'annotation @Component
+- [ ] 2. Créer l'annotation @Autowired
+- [ ] 3. Créer la classe ApplicationContext
+- [ ] 4. Scanner les classes @Component (y compris @Controller, @Repository, @Service)
+- [ ] 5. Instancier les beans dans le bon ordre
+- [ ] 6. Injecter les dépendances via @Autowired
+- [ ] 7. Modifier FrameworkInitializer pour initialiser le conteneur
+- [ ] 8. Ajouter ApplicationContext comme paramètre des contrôleurs
+- [ ] 9. Créer des Repository de test
+- [ ] 10. Afficher les beans dans une page de test
+
+## Structure
+- @Component → classe marquée comme bean
+- @Autowired → injection de dépendance
+- ApplicationContext → conteneur des beans
+- Repository → accès aux données
+- Service → logique métier
+- Controller → point d'entrée MVC

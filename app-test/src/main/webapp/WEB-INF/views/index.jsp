@@ -144,6 +144,11 @@
                 ModelView
                 <span class="label">Vue + Donnees</span>
             </a>
+             <a href="/app-test/sprint5b" class="sprint-btn">
+                <span class="num">5b</span>
+                Repository
+                <span class="label">Spring Container</span>
+            </a>
         </div>
 
         <p class="status">Framework operationnel — Tous les sprints sont disponibles</p>

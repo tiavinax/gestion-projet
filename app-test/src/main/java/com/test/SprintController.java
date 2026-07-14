@@ -5,11 +5,18 @@ import mg.itu.framework.ModelView;
 import mg.itu.framework.RequestMapping;
 import mg.itu.framework.UrlMethod;
 import mg.itu.framework.MethodInfo;
+import mg.itu.framework.Autowired;
+import mg.itu.framework.ApplicationContext;
 import jakarta.servlet.http.HttpServletRequest;
+import com.test.service.UserService;
+
 import java.util.*;
 
 @Controller
 public class SprintController {
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/", method = "GET")
     public ModelView home() {
@@ -140,5 +147,20 @@ public class SprintController {
         return mv;
     }
 
-    
+    @RequestMapping(value = "/sprint5b", method = "GET")
+    public ModelView sprint5b(HttpServletRequest request) {
+        ModelView mv = new ModelView("sprint5b");
+        
+        // Récupérer le contexte
+        ApplicationContext appCtx = (ApplicationContext) request.getServletContext().getAttribute("applicationContext");
+        
+        // Récupérer les utilisateurs
+        List<String> users = userService.getAllUsers();
+        
+        mv.addAttribute("users", users);
+        mv.addAttribute("beans", appCtx.getBeans());
+        mv.addAttribute("totalBeans", appCtx.getBeans().size());
+        
+        return mv;
+    }
 }

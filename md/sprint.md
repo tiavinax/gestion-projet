@@ -68,7 +68,8 @@ SPRINT 3b:
 SPRINT 4: Utiliser une ContextListner une class Listner qui a pour role d'appeler void init() au chargment de l'application
 
 ============ 02/07/26 ===========================
-SPRINT 5: Comment envoyer les donner vers une vue 
+SPRINT 5: 
+    a. Comment envoyer les donner vers une vue 
     Exemple : dans spring mvc :
     
     @GetMapping("/secretariat/profil/{id}")
@@ -89,3 +90,34 @@ SPRINT 5: Comment envoyer les donner vers une vue
     │                    └─────────────────────────────┘  │
     └─────────────────────────────────────────────────────┘
     Il faut conctaner le /emp/list en /emp/list.jsp
+
+    sprint 5b : (Module JPA) : Modifier les donnees passer au vue avec les donnees venu du SGBD
+    ex: - utiliser JDBC (.jar)
+        - creer un fichier db.config 
+
+SPRINT 5b: Repository: Base de donner : findAll(), getById(id),etc
+            - Utiliser un seul [Spring-Container] charger au demarrage de l'application avec Listner mais sans jamais creer le listner mais declarer dans
+            le web.xml (listner + config-spring) (FrameworkInitializer.java)
+            - methode : getBeans pour le context dans le Controller le Spring
+            l'instanciation du controller ne change pas mais le controller va prendre un arguments (ApplicaitonContext appCt) et verifier lors de l'invocation du methode
+
+        ┌─────────────────────────────────────────────────────────────┐
+        │                    ApplicationContext                       │
+        │  (Spring-Container)                                         │
+        │  ┌───────────────────────────────────────────────────────┐  │
+        │  │  Map<Class<?>, Object> beans                          │  │
+        │  │  ┌─────────────────────────────────────────────────┐  │  │
+        │  │  │  UserController → instance                      │  │  │
+        │  │  │  ProduitController → instance                   │  │  │
+        │  │  │  UserService → instance                         │  │  │
+        │  │  │  ProduitService → instance                      │  │  │
+        │  │  │  UserRepository → instance                      │  │  │
+        │  │  │  ProduitRepository → instance                   │  │  │
+        │  │  └─────────────────────────────────────────────────┘  │  │
+        │  └───────────────────────────────────────────────────────┘  │
+        │                                                             │
+        │  Méthodes :                                                 │
+        │  - getBean(Class<?>) → retourne l'instance                  │
+        │  - getBeans() → retourne toutes les instances               │
+        └─────────────────────────────────────────────────────────────┘
+

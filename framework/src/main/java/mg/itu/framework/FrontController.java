@@ -12,10 +12,14 @@ public class FrontController extends HttpServlet {
     private Map<UrlMethod, MethodInfo> urlMapping;
     private List<String> mappingErrors;
     private boolean hasMappingConflicts;
+    private ApplicationContext applicationContext;
 
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
+
+        // Récupérer le conteneur
+        this.applicationContext = (ApplicationContext) context.getAttribute("applicationContext");
 
         this.controllers = (List<Class<?>>) context.getAttribute("controllers");
         this.urlMapping = (Map<UrlMethod, MethodInfo>) context.getAttribute("urlMapping");
@@ -130,7 +134,15 @@ public class FrontController extends HttpServlet {
         try {
             MethodInfo info = urlMapping.get(key);
             Method method = info.getMethod();
-            Object controller = info.getControllerClass().getDeclaredConstructor().newInstance();
+            Class<?> controllerClass = info.getControllerClass();
+            
+            // Récupérer le bean du conteneur au lieu de l'instancier
+            Object controller = applicationContext.getBean(controllerClass);
+            
+            if (controller == null) {
+                // Fallback: instancier directement
+                controller = controllerClass.getDeclaredConstructor().newInstance();
+            }
 
             Object result = invokeMethod(controller, method, request, response);
 
