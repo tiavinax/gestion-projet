@@ -1,6 +1,7 @@
 {
+    "java.project.sourcePaths": ["src/main/java"],
     "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "**/lib/**/*.jar"
-    ]
+        "lib/*.jar"
+    ],
+    "java.project.resourcePaths": ["src/main/webapp"]
 }

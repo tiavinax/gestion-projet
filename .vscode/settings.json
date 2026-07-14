@@ -1,5 +1,17 @@
 {
-    "java.diagnostics.filter": [
-        "Java(32)"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.jdt.ls.java.home": "/usr/lib/jvm/java-17-openjdk-amd64",
+    "java.project.sourcePaths": [
+        "framework/src/main/java",
+        "app-test/src/main/java"
+    ],
+    "java.project.referencedLibraries": [
+        "framework/lib/*.jar",
+        "app-test/lib/*.jar"
+    ],
+    "java.project.resourcePaths": [
+        "framework/src/main/webapp",
+        "app-test/src/main/webapp"
     ]
 }
