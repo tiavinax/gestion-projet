@@ -118,16 +118,16 @@ Créer une classe ModelView pour encapsuler vue et données
 Créer un mini conteneur Spring qui gère l'instanciation et l'injection des dépendances
 
 ## Tâches
-- [ ] 1. Créer l'annotation @Component
-- [ ] 2. Créer l'annotation @Autowired
-- [ ] 3. Créer la classe ApplicationContext
-- [ ] 4. Scanner les classes @Component (y compris @Controller, @Repository, @Service)
-- [ ] 5. Instancier les beans dans le bon ordre
-- [ ] 6. Injecter les dépendances via @Autowired
-- [ ] 7. Modifier FrameworkInitializer pour initialiser le conteneur
-- [ ] 8. Ajouter ApplicationContext comme paramètre des contrôleurs
-- [ ] 9. Créer des Repository de test
-- [ ] 10. Afficher les beans dans une page de test
+- [ok] 1. Créer l'annotation @Component
+- [ok] 2. Créer l'annotation @Autowired
+- [ok] 3. Créer la classe ApplicationContext
+- [ok] 4. Scanner les classes @Component (y compris @Controller, @Repository, @Service)
+- [ok] 5. Instancier les beans dans le bon ordre
+- [ok] 6. Injecter les dépendances via @Autowired
+- [ok] 7. Modifier FrameworkInitializer pour initialiser le conteneur
+- [ok] 8. Ajouter ApplicationContext comme paramètre des contrôleurs
+- [ok] 9. Créer des Repository de test
+- [ok] 10. Afficher les beans dans une page de test
 
 ## Structure
 - @Component → classe marquée comme bean
