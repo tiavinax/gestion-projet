@@ -3,6 +3,7 @@ package com.test.service;
 import mg.itu.framework.Service;
 import mg.itu.framework.Autowired;
 import com.test.repository.UserRepository;
+import com.test.model.User;
 import java.util.*;
 
 @Service
@@ -11,11 +12,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     
-    public List<String> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
     
-    public String getUserById(int id) {
+    public User getUserById(int id) {
         return userRepository.findById(id);
     }
 }

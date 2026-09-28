@@ -136,3 +136,15 @@ Créer un mini conteneur Spring qui gère l'instanciation et l'injection des dé
 - Repository → accès aux données
 - Service → logique métier
 - Controller → point d'entrée MVC
+
+# SPRINT 6 - Web Service (JSON API)
+
+## Tâches
+- [ ] 1. Ajouter Gson au classpath
+- [ ] 2. Créer l'annotation @WebAPI
+- [ ] 3. Modifier MethodInfo (pas nécessaire, on utilise l'annotation directement)
+- [ ] 4. Modifier FrontController.executeMethod() pour détecter @WebAPI
+- [ ] 5. Sérialiser avec Gson + écrire avec PrintWriter
+- [ ] 6. Créer un ApiController de test
+- [ ] 7. Tester avec curl / navigateur
+- [ ] 8. Ajouter une page sprint6.jsp pour la documentation

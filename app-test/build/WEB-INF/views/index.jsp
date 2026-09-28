@@ -144,10 +144,15 @@
                 ModelView
                 <span class="label">Vue + Donnees</span>
             </a>
-             <a href="/app-test/sprint5b" class="sprint-btn">
+            <a href="/app-test/sprint5b" class="sprint-btn">
                 <span class="num">5b</span>
                 Repository
                 <span class="label">Spring Container</span>
+            </a>
+            <a href="/app-test/sprint6" class="sprint-btn">
+                <span class="num">6</span>
+                WebAPI
+                <span class="label">JSON API</span>
             </a>
         </div>
 

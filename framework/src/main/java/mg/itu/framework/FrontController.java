@@ -1,5 +1,6 @@
 package mg.itu.framework;
 
+import com.google.gson.Gson;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -13,6 +14,7 @@ public class FrontController extends HttpServlet {
     private List<String> mappingErrors;
     private boolean hasMappingConflicts;
     private ApplicationContext applicationContext;
+    private final Gson gson = new Gson();
 
     @Override
     public void init() throws ServletException {
@@ -128,7 +130,7 @@ public class FrontController extends HttpServlet {
         return methods;
     }
 
-    private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key)
+     private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key)
             throws ServletException, IOException {
 
         try {
@@ -136,29 +138,32 @@ public class FrontController extends HttpServlet {
             Method method = info.getMethod();
             Class<?> controllerClass = info.getControllerClass();
             
-            // Récupérer le bean du conteneur au lieu de l'instancier
             Object controller = applicationContext.getBean(controllerClass);
-            
             if (controller == null) {
                 controller = controllerClass.getDeclaredConstructor().newInstance();
             }
 
             Object result = invokeMethod(controller, method, request, response);
 
-            if (result instanceof ModelView) {
+            // ============================================
+            // SPRINT 6 : Détection @WebAPI
+            // ============================================
+            if (method.isAnnotationPresent(WebAPI.class)) {
+                writeJsonResponse(response, result);
+            } else if (result instanceof ModelView) {
                 ModelView mv = (ModelView) result;
-
+                
                 for (Map.Entry<String, Object> entry : mv.getData().entrySet()) {
                     request.setAttribute(entry.getKey(), entry.getValue());
                 }
-
+                
                 String viewPath = resolveView(mv.getViewName());
                 request.setAttribute("currentUrl", key.getUrl());
                 request.setAttribute("currentMethod", key.getMethod());
                 request.setAttribute("isError", false);
                 request.setAttribute("isSingle", true);
                 render(request, response, viewPath);
-
+                
             } else if (result instanceof String) {
                 String viewPath = resolveView((String) result);
                 request.setAttribute("currentUrl", key.getUrl());
@@ -166,7 +171,7 @@ public class FrontController extends HttpServlet {
                 request.setAttribute("isError", false);
                 request.setAttribute("isSingle", true);
                 render(request, response, viewPath);
-
+                
             } else {
                 writeRawResponse(response, key, info);
             }
@@ -174,6 +179,20 @@ public class FrontController extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException("Erreur lors de l'execution du controleur", e);
         }
+    }
+
+    // ============================================
+    // SPRINT 6 : Ecriture du JSON
+    // ============================================
+    private void writeJsonResponse(HttpServletResponse response, Object data) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        
+        String json = gson.toJson(data);
+        
+        PrintWriter out = response.getWriter();
+        out.print(json);
+        out.flush();
     }
 
     private Object invokeMethod(Object controller, Method method,

@@ -114,3 +114,15 @@ SPRINT 5b: Repository: Base de donner : findAll(), getById(id),etc - Utiliser un
     │  - getBean(Class<?>) → retourne l'instance                  │
     │  - getBeans() → retourne toutes les instances               │
     └─────────────────────────────────────────────────────────────┘
+    
+SPRINT 6 : Le framework peut renvoyer un Json (Web service(API))
+On peut avoir un methode dans le controlleur qui ne retourne pas un vue mais juste un Json
+
+on doit ajouter un autre annotation qu'on va mettre sur la methode qui va retourner le Json (@WebAPI) 
+Si l'annotation est present on retourne json sinon RequestDipatcher.dispat();
+## Methode : 
+Cote test : la methode retourne un Objet 
+cote Framework : on va invoke la methode et on doit formater l'object en json avec un library et c'est cette string 
+qu'on va mettre dans printWriter();
+
+Sprint final : Rest/upload/session/autorisation
