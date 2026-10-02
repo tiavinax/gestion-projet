@@ -140,11 +140,31 @@ Créer un mini conteneur Spring qui gère l'instanciation et l'injection des dé
 # SPRINT 6 - Web Service (JSON API)
 
 ## Tâches
-- [ ] 1. Ajouter Gson au classpath
-- [ ] 2. Créer l'annotation @WebAPI
-- [ ] 3. Modifier MethodInfo (pas nécessaire, on utilise l'annotation directement)
-- [ ] 4. Modifier FrontController.executeMethod() pour détecter @WebAPI
-- [ ] 5. Sérialiser avec Gson + écrire avec PrintWriter
-- [ ] 6. Créer un ApiController de test
-- [ ] 7. Tester avec curl / navigateur
-- [ ] 8. Ajouter une page sprint6.jsp pour la documentation
+- [ok] 1. Ajouter Gson au classpath
+- [ok] 2. Créer l'annotation @WebAPI
+- [ok] 3. Modifier MethodInfo (pas nécessaire, on utilise l'annotation directement)
+- [ok] 4. Modifier FrontController.executeMethod() pour détecter @WebAPI
+- [ok] 5. Sérialiser avec Gson + écrire avec PrintWriter
+- [ok] 6. Créer un ApiController de test
+- [ok] 7. Tester avec curl / navigateur
+- [ok] 8. Ajouter une page sprint6.jsp pour la documentation
+
+# SPRINT 7 - Binding par attributs
+
+## Objectif
+Remplir automatiquement les paramètres de la méthode à partir des
+paramètres de la requête HTTP (formulaire).
+
+## Tâches
+- [ok] 1. Modifier invokeMethod() pour gérer les paramètres simples
+- [ok] 2. Détecter : HttpServletRequest / HttpServletResponse / primitif / String
+- [ok] 3. Récupérer request.getParameter(paramName)
+- [ok] 4. Convertir la valeur selon le type (String, int, double, boolean)
+- [ok] 5. Passer les arguments dans le bon ordre
+- [ok] 6. Créer un formulaire de test (ajout utilisateur)
+- [ok] 7. Tester avec POST
+
+## Structure
+- Détection par type : request / response / String / int / double / boolean
+- Conversion : String → primitif si nécessaire
+- Ordre : respecter l'ordre des paramètres de la méthode

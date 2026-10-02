@@ -20,16 +20,18 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}Compilation Framework - Sprint 6${NC}"
+echo -e "${BLUE}Compilation Framework - Sprint 7${NC}"
 echo -e "${BLUE}========================================${NC}"
 
 rm -rf $BUILD_DIR $OUTPUT_DIR
 mkdir -p $BUILD_DIR $OUTPUT_DIR
 
-echo -e "${BLUE}[1/3] Compilation...${NC}"
+echo -e "${BLUE}[1/3] Compilation avec -parameters...${NC}"
 find $SRC_DIR -name "*.java" > sources.txt
 
-javac -cp "$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar" -d $BUILD_DIR @sources.txt
+javac -parameters \
+      -cp "$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar" \
+      -d $BUILD_DIR @sources.txt
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Erreur de compilation${NC}"
@@ -40,7 +42,6 @@ fi
 rm sources.txt
 echo -e "${GREEN}✓ Compilation reussie${NC}"
 
-# Copier les JARs necessaires dans le JAR final (pas Gson, il sera fourni par l'app)
 echo -e "${BLUE}[2/3] Creation JAR...${NC}"
 cd $BUILD_DIR
 jar -cvf $APP_NAME-$VERSION.jar * > /dev/null
@@ -49,14 +50,8 @@ cd ..
 
 echo -e "${GREEN}✓ JAR cree: $OUTPUT_DIR/$APP_NAME-$VERSION.jar${NC}"
 
-echo -e "${BLUE}[3/3] Contenu du JAR:${NC}"
-jar -tf $OUTPUT_DIR/$APP_NAME-$VERSION.jar | grep -E "\.class$" | head -15
-echo "   ..."
-
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}✅ Framework compile !${NC}"
-echo -e "${GREEN}📦 JAR: $OUTPUT_DIR/$APP_NAME-$VERSION.jar${NC}"
 echo -e "${GREEN}========================================${NC}"
-echo ""
 
 cd ../script

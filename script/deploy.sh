@@ -15,19 +15,12 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}Deploiement App Test - Sprint 6${NC}"
+echo -e "${BLUE}Deploiement App Test - Sprint 7${NC}"
 echo -e "${BLUE}========================================${NC}"
 
 # Vérifier le framework JAR
 if [ ! -f "$LIB_DIR/framework-1.0.jar" ]; then
     echo -e "${RED}❌ framework-1.0.jar non trouve${NC}"
-    exit 1
-fi
-
-# Vérifier Gson
-if [ ! -f "$LIB_DIR/gson-2.10.1.jar" ]; then
-    echo -e "${RED}❌ gson-2.10.1.jar non trouve dans $LIB_DIR${NC}"
-    echo "Telechargez-le : wget https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar"
     exit 1
 fi
 
@@ -37,11 +30,12 @@ rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR/WEB-INF/classes
 mkdir -p $BUILD_DIR/WEB-INF/lib
 
-# Compilation avec Gson
-echo -e "${BLUE}[2/5] Compilation...${NC}"
+# Compilation avec -parameters (TRES IMPORTANT)
+echo -e "${BLUE}[2/5] Compilation avec -parameters...${NC}"
 find $SRC_DIR -name "*.java" > sources.txt
 
-javac -cp "$LIB_DIR/framework-1.0.jar:$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar" \
+javac -parameters \
+      -cp "$LIB_DIR/framework-1.0.jar:$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar" \
       -d $BUILD_DIR/WEB-INF/classes @sources.txt
 
 if [ $? -ne 0 ]; then
@@ -51,7 +45,7 @@ if [ $? -ne 0 ]; then
 fi
 
 rm sources.txt
-echo -e "${GREEN}✓ Compilation reussie${NC}"
+echo -e "${GREEN}✓ Compilation reussie avec -parameters${NC}"
 
 # Copier les fichiers web
 echo -e "${BLUE}[3/5] Copie des fichiers web...${NC}"
@@ -61,7 +55,7 @@ if [ -f "$BUILD_DIR/web.xml" ]; then
     mv $BUILD_DIR/web.xml $BUILD_DIR/WEB-INF/
 fi
 
-# Copier les librairies (framework + gson)
+# Copier les librairies
 echo -e "${BLUE}[4/5] Copie des librairies...${NC}"
 cp $LIB_DIR/framework-1.0.jar $BUILD_DIR/WEB-INF/lib/
 cp $LIB_DIR/gson-2.10.1.jar $BUILD_DIR/WEB-INF/lib/

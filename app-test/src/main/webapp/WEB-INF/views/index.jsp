@@ -154,6 +154,11 @@
                 WebAPI
                 <span class="label">JSON API</span>
             </a>
+            <a href="/app-test/sprint7" class="sprint-btn">
+                <span class="num">7</span>
+                Binding
+                <span class="label">Formulaire → Paramètres</span>
+            </a>
         </div>
 
         <p class="status">Framework operationnel — Tous les sprints sont disponibles</p>

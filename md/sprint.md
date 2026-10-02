@@ -126,3 +126,79 @@ cote Framework : on va invoke la methode et on doit formater l'object en json av
 qu'on va mettre dans printWriter();
 
 Sprint final : Rest/upload/session/autorisation
+
+SPRINT 7 : Binding 
+Le framework doit automatiquement binder (lier) les paramètres du formulaire HTML aux paramètres de la méthode.
+
+Après Sprint 7 :
+
+```java
+@RequestMapping(value = "/user/save", method = "POST")
+public ModelView save(User user) {  // ✅ Binding automatique
+    // Le framework a rempli user.nom, user.email, etc.
+    userService.save(user);
+    return new ModelView("user_list");
+}
+```
+```java
+@RequestMapping(value = "/user/add", method = "GET")
+public ModelView add() {  // ✅ Aucun paramètre
+    return new ModelView("user_form");
+}
+```
+📚 Principe du Binding (Object)
+Schéma
+text
+┌─────────────────────────────────────────────────────────────┐
+│                    Formulaire HTML                          │
+│                                                             │
+│  <form action="/user/save" method="POST">                  │
+│    <input name="nom" value="Alice">                        │
+│    <input name="email" value="alice@mail.com">             │
+│    <button>Envoyer</button>                                │
+│  </form>                                                    │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          │ POST /user/save
+                          │ nom=Alice&email=alice@mail.com
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    FrontController                          │
+│                                                             │
+│  1. Trouve le MethodInfo pour /user/save POST              │
+│  2. Récupère la signature de la méthode : save(User)       │
+│  3. Détecte le type du paramètre : User                    │
+│  4. Instancie User                                         │
+│  5. Pour chaque champ de User :                            │
+│     - Cherche request.getParameter(fieldName)              │
+│     - Convertit la valeur au bon type                      │
+│     - setField(user, valeur)                               │
+│  6. Appelle la méthode : save(user)                        │
+└─────────────────────────────────────────────────────────────┘
+Règles de binding
+Formulaire HTML	Classe Java	Résultat
+name="nom"	String nom	user.setNom("Alice")
+name="age"	int age	user.setAge(25)
+name="email"	String email	user.setEmail("...")
+
+
+Binding par attribus
+
+Formulaire HTML
+```html
+  <input name="nom" value="Alice">
+  <input name="email" value="alice@mail.com">
+  <input name="age" value="25">
+```
+        ↓
+POST /user/save
+nom=Alice&email=alice@mail.com&age=25
+        ↓
+FrontController analyse la signature : save(String nom, String email, int age)
+        ↓
+Pour chaque paramètre :
+  - nom   → request.getParameter("nom")   → "Alice"   → String
+  - email → request.getParameter("email") → "..."     → String
+  - age   → request.getParameter("age")   → "25"      → int (parseInt)
+        ↓
+method.invoke(controller, "Alice", "alice@mail.com", 25)

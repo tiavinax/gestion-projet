@@ -195,33 +195,80 @@ public class FrontController extends HttpServlet {
         out.flush();
     }
 
-    private Object invokeMethod(Object controller, Method method,
+        private Object invokeMethod(Object controller, Method method,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
         Class<?>[] paramTypes = method.getParameterTypes();
+        java.lang.reflect.Parameter[] parameters = method.getParameters();
 
+        // Aucun paramètre
         if (paramTypes.length == 0) {
             return method.invoke(controller);
-        } else if (paramTypes.length == 1 && paramTypes[0].equals(HttpServletRequest.class)) {
-            return method.invoke(controller, request);
-        } else if (paramTypes.length == 2 &&
-                paramTypes[0].equals(HttpServletRequest.class) &&
-                paramTypes[1].equals(HttpServletResponse.class)) {
-            return method.invoke(controller, request, response);
-        } else {
-            Object[] args = new Object[paramTypes.length];
-            for (int i = 0; i < paramTypes.length; i++) {
-                if (paramTypes[i].equals(HttpServletRequest.class)) {
-                    args[i] = request;
-                } else if (paramTypes[i].equals(HttpServletResponse.class)) {
-                    args[i] = response;
-                } else {
-                    args[i] = null;
-                }
-            }
-            return method.invoke(controller, args);
         }
+
+        // Construire les arguments
+        Object[] args = new Object[paramTypes.length];
+
+        for (int i = 0; i < paramTypes.length; i++) {
+            Class<?> type = paramTypes[i];
+            String paramName = parameters[i].getName();
+
+            if (type.equals(HttpServletRequest.class)) {
+                args[i] = request;
+            } else if (type.equals(HttpServletResponse.class)) {
+                args[i] = response;
+            } else {
+                // Binding automatique depuis les paramètres de la requête
+                String value = request.getParameter(paramName);
+                args[i] = convertValue(value, type);
+            }
+        }
+
+        return method.invoke(controller, args);
+    }
+
+    /**
+     * Convertit une valeur String vers le type cible
+     */
+    private Object convertValue(String value, Class<?> type) {
+        if (value == null || value.isEmpty()) {
+            return getDefaultValue(type);
+        }
+
+        if (type.equals(String.class)) {
+            return value;
+        } else if (type.equals(int.class) || type.equals(Integer.class)) {
+            return Integer.parseInt(value);
+        } else if (type.equals(long.class) || type.equals(Long.class)) {
+            return Long.parseLong(value);
+        } else if (type.equals(double.class) || type.equals(Double.class)) {
+            return Double.parseDouble(value);
+        } else if (type.equals(float.class) || type.equals(Float.class)) {
+            return Float.parseFloat(value);
+        } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+            return Boolean.parseBoolean(value);
+        } else if (type.equals(java.util.Date.class)) {
+            try {
+                return new java.text.SimpleDateFormat("yyyy-MM-dd").parse(value);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Retourne la valeur par défaut pour un type
+     */
+    private Object getDefaultValue(Class<?> type) {
+        if (type.equals(int.class)) return 0;
+        if (type.equals(long.class)) return 0L;
+        if (type.equals(double.class)) return 0.0;
+        if (type.equals(float.class)) return 0.0f;
+        if (type.equals(boolean.class)) return false;
+        return null;
     }
 
     private String resolveView(String viewName) {

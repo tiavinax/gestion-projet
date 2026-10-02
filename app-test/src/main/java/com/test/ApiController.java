@@ -67,4 +67,12 @@ public class ApiController {
         mv.addAttribute("sprintDesc", "Retour de JSON via l'annotation @WebAPI");
         return mv;
     }
+
+    // Formulaire
+    @RequestMapping(value = "/sprint7", method = "GET")
+    public ModelView sprint7(HttpServletRequest request) {
+        ModelView mv = new ModelView("sprint7_form");
+        mv.addAttribute("serverTime", new Date());
+        return mv;
+    }
 }
