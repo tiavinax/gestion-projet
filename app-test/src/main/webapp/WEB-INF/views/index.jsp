@@ -159,6 +159,11 @@
                 Binding
                 <span class="label">Formulaire → Paramètres</span>
             </a>
+            <a href="/app-test/sprint7b" class="sprint-btn">
+                <span class="num">7b</span>
+                Binding Object
+                <span class="label">Formulaire → Objet</span>
+            </a>
         </div>
 
         <p class="status">Framework operationnel — Tous les sprints sont disponibles</p>

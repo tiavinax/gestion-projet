@@ -68,8 +68,8 @@
         </table>
         
         <div class="actions">
-            <a href="/app-test/user/add" class="btn btn-add">➕ Ajouter</a>
-            <a href="/app-test/" class="btn btn-back">🏠 Accueil</a>
+            <a href="/app-test/user/add" class="btn btn-add">Ajouter</a>
+            <a href="/app-test/" class="btn btn-back">Accueil</a>
         </div>
     </div>
 </body>

@@ -195,81 +195,116 @@ public class FrontController extends HttpServlet {
         out.flush();
     }
 
-        private Object invokeMethod(Object controller, Method method,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    private Object invokeMethod(Object controller, Method method,
+        HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
 
-        Class<?>[] paramTypes = method.getParameterTypes();
-        java.lang.reflect.Parameter[] parameters = method.getParameters();
+    Class<?>[] paramTypes = method.getParameterTypes();
+    java.lang.reflect.Parameter[] parameters = method.getParameters();
 
-        // Aucun paramètre
-        if (paramTypes.length == 0) {
-            return method.invoke(controller);
-        }
+    // Aucun paramètre
+    if (paramTypes.length == 0) {
+        return method.invoke(controller);
+    }
 
-        // Construire les arguments
-        Object[] args = new Object[paramTypes.length];
+    Object[] args = new Object[paramTypes.length];
 
-        for (int i = 0; i < paramTypes.length; i++) {
-            Class<?> type = paramTypes[i];
+    for (int i = 0; i < paramTypes.length; i++) {
+        Class<?> type = paramTypes[i];
+
+        if (type.equals(HttpServletRequest.class)) {
+            args[i] = request;
+        } else if (type.equals(HttpServletResponse.class)) {
+            args[i] = response;
+        } else if (isSimpleType(type)) {
+            // Binding simple (Sprint 7)
             String paramName = parameters[i].getName();
-
-            if (type.equals(HttpServletRequest.class)) {
-                args[i] = request;
-            } else if (type.equals(HttpServletResponse.class)) {
-                args[i] = response;
-            } else {
-                // Binding automatique depuis les paramètres de la requête
-                String value = request.getParameter(paramName);
-                args[i] = convertValue(value, type);
-            }
+            String value = request.getParameter(paramName);
+            args[i] = convertValue(value, type);
+        } else {
+            // Binding Object (Sprint 7b)
+            args[i] = bindObject(type, request);
         }
-
-        return method.invoke(controller, args);
     }
 
-    /**
-     * Convertit une valeur String vers le type cible
-     */
-    private Object convertValue(String value, Class<?> type) {
-        if (value == null || value.isEmpty()) {
-            return getDefaultValue(type);
-        }
+    return method.invoke(controller, args);
+}
 
-        if (type.equals(String.class)) {
-            return value;
-        } else if (type.equals(int.class) || type.equals(Integer.class)) {
-            return Integer.parseInt(value);
-        } else if (type.equals(long.class) || type.equals(Long.class)) {
-            return Long.parseLong(value);
-        } else if (type.equals(double.class) || type.equals(Double.class)) {
-            return Double.parseDouble(value);
-        } else if (type.equals(float.class) || type.equals(Float.class)) {
-            return Float.parseFloat(value);
-        } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
-            return Boolean.parseBoolean(value);
-        } else if (type.equals(java.util.Date.class)) {
-            try {
-                return new java.text.SimpleDateFormat("yyyy-MM-dd").parse(value);
-            } catch (Exception e) {
-                return null;
-            }
-        }
+/**
+ * Vérifie si le type est un type simple (primitif, String, wrapper)
+ */
+private boolean isSimpleType(Class<?> type) {
+    return type.equals(String.class)
+        || type.equals(int.class) || type.equals(Integer.class)
+        || type.equals(long.class) || type.equals(Long.class)
+        || type.equals(double.class) || type.equals(Double.class)
+        || type.equals(float.class) || type.equals(Float.class)
+        || type.equals(boolean.class) || type.equals(Boolean.class)
+        || type.equals(java.util.Date.class);
+}
 
-        return null;
+/**
+ * Instancie un objet et remplit ses champs depuis la requête
+ */
+private Object bindObject(Class<?> type, HttpServletRequest request) throws Exception {
+    // 1. Instancier l'objet
+    Object obj = type.getDeclaredConstructor().newInstance();
+
+    // 2. Parcourir les champs
+    java.lang.reflect.Field[] fields = type.getDeclaredFields();
+    for (java.lang.reflect.Field field : fields) {
+        String fieldName = field.getName();
+        String value = request.getParameter(fieldName);
+
+        if (value != null) {
+            field.setAccessible(true);
+            Object converted = convertValue(value, field.getType());
+            field.set(obj, converted);
+        }
     }
 
-    /**
-     * Retourne la valeur par défaut pour un type
-     */
-    private Object getDefaultValue(Class<?> type) {
-        if (type.equals(int.class)) return 0;
-        if (type.equals(long.class)) return 0L;
-        if (type.equals(double.class)) return 0.0;
-        if (type.equals(float.class)) return 0.0f;
-        if (type.equals(boolean.class)) return false;
-        return null;
+    return obj;
+}
+
+/**
+ * Convertit une valeur String vers le type cible
+ */
+private Object convertValue(String value, Class<?> type) {
+    if (value == null || value.isEmpty()) {
+        return getDefaultValue(type);
     }
+
+    if (type.equals(String.class)) {
+        return value;
+    } else if (type.equals(int.class) || type.equals(Integer.class)) {
+        return Integer.parseInt(value);
+    } else if (type.equals(long.class) || type.equals(Long.class)) {
+        return Long.parseLong(value);
+    } else if (type.equals(double.class) || type.equals(Double.class)) {
+        return Double.parseDouble(value);
+    } else if (type.equals(float.class) || type.equals(Float.class)) {
+        return Float.parseFloat(value);
+    } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+        return Boolean.parseBoolean(value);
+    } else if (type.equals(java.util.Date.class)) {
+        try {
+            return new java.text.SimpleDateFormat("yyyy-MM-dd").parse(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    return null;
+}
+
+private Object getDefaultValue(Class<?> type) {
+    if (type.equals(int.class)) return 0;
+    if (type.equals(long.class)) return 0L;
+    if (type.equals(double.class)) return 0.0;
+    if (type.equals(float.class)) return 0.0f;
+    if (type.equals(boolean.class)) return false;
+    return null;
+}
 
     private String resolveView(String viewName) {
         if (!viewName.startsWith("/")) {

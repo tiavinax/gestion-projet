@@ -75,4 +75,11 @@ public class ApiController {
         mv.addAttribute("serverTime", new Date());
         return mv;
     }
+
+    @RequestMapping(value = "/sprint7b", method = "GET")
+    public ModelView sprint7b(HttpServletRequest request) {
+        ModelView mv = new ModelView("sprint7b_form");
+        mv.addAttribute("serverTime", new Date());
+        return mv;
+    }
 }

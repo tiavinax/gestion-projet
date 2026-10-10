@@ -51,14 +51,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>➕ Ajouter un utilisateur <span class="badge">Sprint 7</span></h1>
+        <h1>Ajouter un utilisateur <span class="badge" style="text-align: center;">Sprint 7</span></h1>
         
         <div class="info">
             Le framework remplit automatiquement les paramètres de la méthode
             <code>save(String nom, String email, int age)</code>
         </div>
         
-        <form action="/app-test/user/save" method="POST">
+        <form action="/app-test/user/save-attr" method="POST">
             <div class="form-group">
                 <label>Nom</label>
                 <input type="text" name="nom" placeholder="Alice" required>
@@ -77,7 +77,7 @@
             <button type="submit">Envoyer</button>
         </form>
         
-        <a href="/app-test/" class="btn-back">🏠 Retour à l'accueil</a>
+        <a href="/app-test/" class="btn-back">Retour à l'accueil</a>
     </div>
 </body>
 </html>

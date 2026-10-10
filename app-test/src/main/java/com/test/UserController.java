@@ -15,35 +15,61 @@ public class UserController {
     @Autowired
     private UserService userService;
     
-    // Formulaire d'ajout
-    @RequestMapping(value = "/user/add", method = "GET")
+    // ============================================
+    // SPRINT 7 : Binding par attributs
+    // ============================================
+    
+    @RequestMapping(value = "/user/sprint7", method = "GET")
     public ModelView addForm() {
         return new ModelView("sprint7_form");
     }
     
-    // Sauvegarde avec binding automatique
-    @RequestMapping(value = "/user/save", method = "POST")
-    public ModelView save(String nom, String email, int age) {
-        System.out.println("Binding automatique :");
+    @RequestMapping(value = "/user/save-attr", method = "POST")
+    public ModelView saveAttr(String nom, String email, int age) {
+        System.out.println("=== Sprint 7 : Binding attributs ===");
         System.out.println("  nom   = " + nom);
         System.out.println("  email = " + email);
         System.out.println("  age   = " + age);
         
-        // Créer et sauvegarder l'utilisateur
         User user = new User();
         user.setId(userService.getAllUsers().size() + 1);
         user.setName(nom);
         user.setEmail(email);
         userService.save(user);
         
-        ModelView mv = new ModelView("user_list");
+        ModelView mv = new ModelView("sprint7_list");
         mv.addAttribute("users", userService.getAllUsers());
-        mv.addAttribute("message", "Utilisateur " + nom + " ajouté avec succès !");
+        mv.addAttribute("message", "[Sprint 7] Utilisateur " + nom + " ajouté (binding attributs)");
         mv.addAttribute("serverTime", new Date());
         return mv;
     }
     
-    // Liste des utilisateurs
+    
+    // ============================================
+    // SPRINT 7b : Binding Object
+    // ============================================
+    
+    @RequestMapping(value = "/user/sprint7b", method = "GET")
+    public ModelView addFormObject() {
+        return new ModelView("sprint7b_form");
+    }
+    
+    @RequestMapping(value = "/user/save-object", method = "POST")
+    public ModelView saveObject(User user) {
+        System.out.println("=== Sprint 7b : Binding Object ===");
+        System.out.println("  user.name  = " + user.getName());
+        System.out.println("  user.email = " + user.getEmail());
+        
+        user.setId(userService.getAllUsers().size() + 1);
+        userService.save(user);
+        
+        ModelView mv = new ModelView("sprint7_list");
+        mv.addAttribute("users", userService.getAllUsers());
+        mv.addAttribute("message", "[Sprint 7b] Utilisateur " + user.getName() + " ajouté (binding object)");
+        mv.addAttribute("serverTime", new Date());
+        return mv;
+    }
+
     @RequestMapping(value = "/user/list", method = "GET")
     public ModelView list() {
         ModelView mv = new ModelView("sprint7_list");
@@ -51,5 +77,4 @@ public class UserController {
         mv.addAttribute("serverTime", new Date());
         return mv;
     }
-
 }

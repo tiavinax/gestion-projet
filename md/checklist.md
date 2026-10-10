@@ -168,3 +168,25 @@ paramètres de la requête HTTP (formulaire).
 - Détection par type : request / response / String / int / double / boolean
 - Conversion : String → primitif si nécessaire
 - Ordre : respecter l'ordre des paramètres de la méthode
+
+# SPRINT 7b - Binding Object
+
+## Objectif
+Remplir automatiquement un objet (User, Produit, etc.) à partir
+des paramètres de la requête HTTP.
+
+# SPRINT 7b - Binding Object
+
+## Tâches
+- [ok] 1. Ajouter isCustomObject() dans FrontController
+- [ok] 2. Ajouter bindObject() pour remplir l'objet
+- [ok] 3. Modifier invokeMethod() pour détecter les objets
+- [ok] 4. Créer un modèle Produit (ou utiliser User existant)
+- [ok] 5. Créer un formulaire de test
+- [ok] 6. Tester avec POST
+
+## Structure
+- Détection : isCustomObject(type)
+- Instanciation : type.newInstance()
+- Binding : field.set(obj, convertedValue)
+- Conversion : String → type du champ

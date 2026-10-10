@@ -202,3 +202,33 @@ Pour chaque paramètre :
   - age   → request.getParameter("age")   → "25"      → int (parseInt)
         ↓
 method.invoke(controller, "Alice", "alice@mail.com", 25)
+
+SPRINT 7b: Binding Object 
+Instance Object disponible 
+
+┌─────────────────────────────────────────────────────────────┐
+│                    Formulaire HTML                          │
+│                                                             │
+│  <input name="nom"   value="Alice">                         │
+│  <input name="email" value="alice@mail.com">                │
+│  <input name="age"   value="25">                            │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          │ POST /user/save
+                          │ nom=Alice&email=alice@mail.com&age=25
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    FrontController                          │
+│                                                             │
+│  1. Détecte : save(User user)                               │
+│  2. Type du paramètre : User (custom object)                │
+│  3. Instancie : new User()                                  │
+│  4. Pour chaque champ de User :                             │
+│     - field "nom"    → request.getParameter("nom")          │
+│     - field "email"  → request.getParameter("email")        │
+│     - field "age"    → request.getParameter("age")          │
+│  5. Convertit et assigne via setters                        │
+│  6. Passe l'objet User à la méthode                         │
+└─────────────────────────┬───────────────────────────────────┘
+                          ▼
+                    save(User user)
