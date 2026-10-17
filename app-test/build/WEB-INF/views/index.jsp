@@ -164,6 +164,11 @@
                 Binding Object
                 <span class="label">Formulaire → Objet</span>
             </a>
+            <a href="/app-test/sprint8" class="sprint-btn">
+                <span class="num">8</span>
+                Upload File
+                <span class="label">MapFile</span>
+            </a>
         </div>
 
         <p class="status">Framework operationnel — Tous les sprints sont disponibles</p>

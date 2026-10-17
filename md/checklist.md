@@ -190,3 +190,16 @@ des paramètres de la requête HTTP.
 - Instanciation : type.newInstance()
 - Binding : field.set(obj, convertedValue)
 - Conversion : String → type du champ
+
+# SPRINT 8 - Upload de fichiers
+
+## Tâches
+- [ok] 1. Créer la classe MapFile
+- [ok] 2. Modifier web.xml (multipart-config)
+- [ok] 3. Modifier invokeMethod() + bindObject() pour MapFile
+- [ok] 4. Ajouter extractMapFile() dans FrontController
+- [ok] 5. Créer le dossier uploads/
+- [ok] 6. Créer UploadController
+- [ok] 7. Créer sprint8_form.jsp
+- [ok] 8. Créer sprint8_result.jsp
+- [ok] 9. Bouton dans index.jsp

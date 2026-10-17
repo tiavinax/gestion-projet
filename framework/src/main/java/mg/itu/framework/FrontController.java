@@ -202,7 +202,6 @@ public class FrontController extends HttpServlet {
     Class<?>[] paramTypes = method.getParameterTypes();
     java.lang.reflect.Parameter[] parameters = method.getParameters();
 
-    // Aucun paramètre
     if (paramTypes.length == 0) {
         return method.invoke(controller);
     }
@@ -211,23 +210,151 @@ public class FrontController extends HttpServlet {
 
     for (int i = 0; i < paramTypes.length; i++) {
         Class<?> type = paramTypes[i];
+        String paramName = parameters[i].getName();
 
         if (type.equals(HttpServletRequest.class)) {
             args[i] = request;
         } else if (type.equals(HttpServletResponse.class)) {
             args[i] = response;
+        } else if (type.equals(MapFile.class)) {
+            // Sprint 8 : Binding MapFile (single)
+            args[i] = extractMapFile(request, paramName);
+        } else if (type.equals(MapFile[].class)) {
+            // Sprint 8 : Binding MapFile (multiple)
+            args[i] = extractMapFiles(request, paramName);
         } else if (isSimpleType(type)) {
-            // Binding simple (Sprint 7)
-            String paramName = parameters[i].getName();
+            // Sprint 7 : Binding attribut
             String value = request.getParameter(paramName);
             args[i] = convertValue(value, type);
         } else {
-            // Binding Object (Sprint 7b)
+            // Sprint 7b : Binding object
             args[i] = bindObject(type, request);
         }
     }
 
     return method.invoke(controller, args);
+}
+
+/**
+ * Instancie un objet et remplit ses champs depuis la requête
+ */
+private Object bindObject(Class<?> type, HttpServletRequest request) throws Exception {
+    Object obj = type.getDeclaredConstructor().newInstance();
+
+    java.lang.reflect.Field[] fields = type.getDeclaredFields();
+    for (java.lang.reflect.Field field : fields) {
+        String fieldName = field.getName();
+        field.setAccessible(true);
+
+        if (field.getType().equals(MapFile.class)) {
+            // Sprint 8 : Champ MapFile dans un objet
+            MapFile mf = extractMapFile(request, fieldName);
+            if (mf != null) {
+                field.set(obj, mf);
+            }
+        } else if (field.getType().equals(MapFile[].class)) {
+            MapFile[] mfs = extractMapFiles(request, fieldName);
+            if (mfs != null && mfs.length > 0) {
+                field.set(obj, mfs);
+            }
+        } else {
+            // Binding classique
+            String value = request.getParameter(fieldName);
+            if (value != null) {
+                Object converted = convertValue(value, field.getType());
+                field.set(obj, converted);
+            }
+        }
+    }
+
+    return obj;
+}
+
+/**
+ * Extrait un fichier uploadé et le convertit en MapFile
+ */
+private MapFile extractMapFile(HttpServletRequest request, String name) throws Exception {
+    try {
+        jakarta.servlet.http.Part part = request.getPart(name);
+        if (part == null || part.getSize() == 0) {
+            return null;
+        }
+
+        MapFile mf = new MapFile();
+        String submittedName = part.getSubmittedFileName();
+        
+        if (submittedName == null || submittedName.isEmpty()) {
+            return null;
+        }
+        
+        mf.setFileName(submittedName);
+        mf.setExtension(getExtension(submittedName));
+        
+        try (java.io.InputStream is = part.getInputStream()) {
+            mf.setContenu(readAllBytes(is));
+        }
+        
+        return mf;
+        
+    } catch (Exception e) {
+        return null;
+    }
+}
+
+/**
+ * Extrait plusieurs fichiers uploadés
+ */
+private MapFile[] extractMapFiles(HttpServletRequest request, String name) throws Exception {
+    try {
+        java.util.Collection<jakarta.servlet.http.Part> parts = request.getParts();
+        java.util.List<MapFile> result = new java.util.ArrayList<>();
+        
+        for (jakarta.servlet.http.Part part : parts) {
+            if (part.getName().equals(name) && part.getSize() > 0) {
+                String submittedName = part.getSubmittedFileName();
+                if (submittedName != null && !submittedName.isEmpty()) {
+                    MapFile mf = new MapFile();
+                    mf.setFileName(submittedName);
+                    mf.setExtension(getExtension(submittedName));
+                    try (java.io.InputStream is = part.getInputStream()) {
+                        mf.setContenu(readAllBytes(is));
+                    }
+                    result.add(mf);
+                }
+            }
+        }
+        
+        return result.isEmpty() ? null : result.toArray(new MapFile[0]);
+        
+    } catch (Exception e) {
+        return null;
+    }
+}
+
+/**
+ * Lit tous les bytes d'un InputStream (compatible Java 8)
+ */
+private byte[] readAllBytes(InputStream is) throws java.io.IOException {
+    java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+    byte[] data = new byte[4096];
+    int bytesRead;
+    while ((bytesRead = is.read(data, 0, data.length)) != -1) {
+        buffer.write(data, 0, bytesRead);
+    }
+    buffer.flush();
+    return buffer.toByteArray();
+}
+
+/**
+ * Extrait l'extension d'un nom de fichier
+ */
+private String getExtension(String fileName) {
+    if (fileName == null) return "";
+    int dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+        return fileName.substring(dotIndex + 1).toLowerCase();
+    }
+    return "";
 }
 
 /**
@@ -241,29 +368,6 @@ private boolean isSimpleType(Class<?> type) {
         || type.equals(float.class) || type.equals(Float.class)
         || type.equals(boolean.class) || type.equals(Boolean.class)
         || type.equals(java.util.Date.class);
-}
-
-/**
- * Instancie un objet et remplit ses champs depuis la requête
- */
-private Object bindObject(Class<?> type, HttpServletRequest request) throws Exception {
-    // 1. Instancier l'objet
-    Object obj = type.getDeclaredConstructor().newInstance();
-
-    // 2. Parcourir les champs
-    java.lang.reflect.Field[] fields = type.getDeclaredFields();
-    for (java.lang.reflect.Field field : fields) {
-        String fieldName = field.getName();
-        String value = request.getParameter(fieldName);
-
-        if (value != null) {
-            field.setAccessible(true);
-            Object converted = convertValue(value, field.getType());
-            field.set(obj, converted);
-        }
-    }
-
-    return obj;
 }
 
 /**

@@ -10,6 +10,9 @@ import java.util.jar.JarFile;
 
 public class ClassScanner {
 
+    // Seul le jar du framework est scanné dans les libs, filtré par ce préfixe
+    private static final String FRAMEWORK_PACKAGE = "mg.itu.framework.";
+
     public static List<Class<?>> scanControllers(ServletContext servletContext) throws Exception {
         return scanClassesWithAnnotation(servletContext, Controller.class);
     }
@@ -17,7 +20,7 @@ public class ClassScanner {
     public static List<Class<?>> scanComponents(ServletContext servletContext) throws Exception {
         List<Class<?>> components = new ArrayList<>();
         List<Class<?>> allClasses = scanAllClasses(servletContext);
-        
+
         for (Class<?> clazz : allClasses) {
             if (clazz.isAnnotationPresent(Component.class) ||
                 clazz.isAnnotationPresent(Controller.class) ||
@@ -29,13 +32,10 @@ public class ClassScanner {
         return components;
     }
 
-    public static List<Class<?>> scanClassesWithAnnotation(ServletContext servletContext, 
-                                                            Class<? extends java.lang.annotation.Annotation> annotation) 
-            throws Exception {
+    public static List<Class<?>> scanClassesWithAnnotation(ServletContext servletContext,
+            Class<? extends java.lang.annotation.Annotation> annotation) throws Exception {
         List<Class<?>> result = new ArrayList<>();
-        List<Class<?>> allClasses = scanAllClasses(servletContext);
-        
-        for (Class<?> clazz : allClasses) {
+        for (Class<?> clazz : scanAllClasses(servletContext)) {
             if (clazz.isAnnotationPresent(annotation)) {
                 result.add(clazz);
             }
@@ -44,10 +44,11 @@ public class ClassScanner {
     }
 
     public static List<Class<?>> scanAllClasses(ServletContext servletContext) throws Exception {
-        List<Class<?>> classes = new ArrayList<>();
+        // LinkedHashSet : pas de doublons, ordre conservé
+        Set<Class<?>> classes = new LinkedHashSet<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        // 1. Scan du dossier classes
+        // 1. Code de l'application : WEB-INF/classes
         URL classesUrl = classLoader.getResource("");
         if (classesUrl != null) {
             String filePath = URLDecoder.decode(classesUrl.getFile(), "UTF-8");
@@ -57,28 +58,19 @@ public class ClassScanner {
             }
         }
 
-        // 2. Scan du JAR principal
+        // 2. Jar du framework uniquement, filtré par package
         String jarPath = ClassScanner.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        jarPath = URLDecoder.decode(jarPath, "UTF-8");
         if (jarPath.endsWith(".jar")) {
-            scanJarFile(jarPath, classes);
+            scanJarFile(jarPath, classLoader, classes);
         }
 
-        // 3. Scan des JARs dans WEB-INF/lib
-        File libDir = new File(servletContext.getRealPath("/WEB-INF/lib"));
-        if (libDir.exists() && libDir.isDirectory()) {
-            File[] jars = libDir.listFiles();
-            if (jars != null) {
-                for (File jarFile : jars) {
-                    if (jarFile.getName().endsWith(".jar") && !jarFile.getName().equals("servlet-api.jar")) {
-                        scanJarFile(jarFile.getAbsolutePath(), classes);
-                    }
-                }
-            }
-        }
-        return classes;
+        // 3. Les autres jars (postgresql, gson...) ne sont PAS scannés
+        return new ArrayList<>(classes);
     }
 
-    private static void scanDirectory(ClassLoader classLoader, File directory, String packageName, List<Class<?>> classes) {
+    private static void scanDirectory(ClassLoader classLoader, File directory,
+                                      String packageName, Set<Class<?>> classes) {
         File[] files = directory.listFiles();
         if (files == null) return;
 
@@ -87,36 +79,35 @@ public class ClassScanner {
                 String newPackage = packageName.isEmpty() ? file.getName() : packageName + "." + file.getName();
                 scanDirectory(classLoader, file, newPackage, classes);
             } else if (file.getName().endsWith(".class")) {
-                String className = packageName + "." + file.getName().replace(".class", "");
+                String simpleName = file.getName().replace(".class", "");
+                String className = packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
                 if (className.contains("main.java")) continue;
 
                 try {
-                    Class<?> clazz = Class.forName(className, false, classLoader);
-                    classes.add(clazz);
-                } catch (ClassNotFoundException e) {
-                    // Ignorer
+                    classes.add(Class.forName(className, false, classLoader));
+                } catch (ClassNotFoundException | LinkageError e) {
+                    // classe inutilisable (dépendance absente) : on l'ignore
                 }
             }
         }
     }
 
-    private static void scanJarFile(String jarPath, List<Class<?>> classes) throws Exception {
+    private static void scanJarFile(String jarPath, ClassLoader classLoader,
+                                    Set<Class<?>> classes) throws Exception {
         try (JarFile jarFile = new JarFile(jarPath)) {
             Enumeration<JarEntry> entries = jarFile.entries();
 
             while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                String name = entry.getName();
+                String name = entries.nextElement().getName();
 
                 if (name.endsWith(".class") && !name.contains("module-info")) {
                     String className = name.replace("/", ".").replace(".class", "");
-                    if (className.contains("main.java")) continue;
+                    if (!className.startsWith(FRAMEWORK_PACKAGE)) continue;
 
                     try {
-                        Class<?> clazz = Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-                        classes.add(clazz);
-                    } catch (ClassNotFoundException e) {
-                        // Ignorer
+                        classes.add(Class.forName(className, false, classLoader));
+                    } catch (ClassNotFoundException | LinkageError e) {
+                        // ignoré
                     }
                 }
             }

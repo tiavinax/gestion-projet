@@ -232,3 +232,67 @@ Instance Object disponible
 └─────────────────────────┬───────────────────────────────────┘
                           ▼
                     save(User user)
+
+SPRINT 8 : Formulaire avec fichier
+
+```html
+<form method="POST" enctype="multipart/form-data">   ← ATTENTION
+    <input name="name">
+    <input name="email">
+    <input type="file" name="fichier">               ← NOUVEAU
+</form>
+```
+
+→ Content-Type : multipart/form-data
+→ request.getParameter() NE FONCTIONNE PAS pour les fichiers
+→ Il faut utiliser request.getPart(name) ou request.getParts()
+
+La classe MapFile
+```text
+┌─────────────────────────────────────────────┐
+│                 MapFile                     │
+├─────────────────────────────────────────────┤
+│  - fileName   : String   ← "document.pdf"  │
+│  - extension  : String   ← "pdf"           │
+│  - contenu    : byte[]   ← [0x25, 0x50...] │
+├─────────────────────────────────────────────┤
+│  + getters / setters                        │
+└─────────────────────────────────────────────┘
+fileName : nom complet du fichier
+extension : extension (pdf, jpg, png, etc.)
+contenu : les bytes bruts du fichier
+```
+
+🔄 Flux complet
+
+
+
+                Formulaire HTML                          
+```html                                                      
+  <form method="POST" enctype="multipart/form-data">        
+    <input name="name">                                     
+    <input name="email">                                    
+    <input type="file" name="fichier">                      
+  </form>                                                   
+```                                                         
+───────────────────────┬────────────────────────────────────
+                       │ POST (multipart/form-data)
+                       │ name=Alice&email=...&fichier=[BINARY]
+                       ▼
+┌──────────────────────────────────────────────────────────── ┐
+│                   FrontController                           │
+│  1. Détecte : save(User user)                               │
+│  2. Instancie : new User()                                  │
+│  3. Pour chaque champ de User :                             │
+│     - "name"    → request.getParameter("name")              │
+│     - "email"   → request.getParameter("email")             │
+│     - "fichier" → request.getPart("fichier")  ← NOUVEAU     │
+│                   → Créer MapFile                           │
+│                   → setFileName(part.getSubmittedFileName())│
+│                   → setExtension(...)                       │
+│                   → setContenu(part.getInputStream()...)    │
+│  4. user.setFichier(mapFile)                                │
+└───────────────────────┬──────────────────────────────────── ┘
+                        ▼
+                    save(User user)  ← user.fichier est rempli
+

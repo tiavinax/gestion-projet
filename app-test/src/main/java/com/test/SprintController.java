@@ -155,7 +155,7 @@ public class SprintController {
         ApplicationContext appCtx = (ApplicationContext) request.getServletContext()
             .getAttribute("applicationContext");
         
-        // ⚠️ CORRECTION : List<User> au lieu de List<String>
+        //  CORRECTION : List<User> au lieu de List<String>
         List<User> users = userService.getAllUsers();
         
         mv.addAttribute("users", users);

@@ -32,14 +32,13 @@ public class UserController {
         System.out.println("  age   = " + age);
         
         User user = new User();
-        user.setId(userService.getAllUsers().size() + 1);
         user.setName(nom);
         user.setEmail(email);
-        userService.save(user);
+        userService.save(user);   // ← ID généré par la BDD (SERIAL)
         
         ModelView mv = new ModelView("sprint7_list");
         mv.addAttribute("users", userService.getAllUsers());
-        mv.addAttribute("message", "[Sprint 7] Utilisateur " + nom + " ajouté (binding attributs)");
+        mv.addAttribute("message", "[Sprint 7] Utilisateur " + nom + " ajouté en BDD (binding attributs)");
         mv.addAttribute("serverTime", new Date());
         return mv;
     }
@@ -60,12 +59,11 @@ public class UserController {
         System.out.println("  user.name  = " + user.getName());
         System.out.println("  user.email = " + user.getEmail());
         
-        user.setId(userService.getAllUsers().size() + 1);
-        userService.save(user);
+        userService.save(user);   // ← ID généré par la BDD (SERIAL)
         
         ModelView mv = new ModelView("sprint7_list");
         mv.addAttribute("users", userService.getAllUsers());
-        mv.addAttribute("message", "[Sprint 7b] Utilisateur " + user.getName() + " ajouté (binding object)");
+        mv.addAttribute("message", "[Sprint 7b] Utilisateur " + user.getName() + " ajouté en BDD (binding object)");
         mv.addAttribute("serverTime", new Date());
         return mv;
     }

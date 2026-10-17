@@ -30,7 +30,7 @@ echo -e "${BLUE}[1/3] Compilation avec -parameters...${NC}"
 find $SRC_DIR -name "*.java" > sources.txt
 
 javac -parameters \
-      -cp "$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar" \
+      -cp "$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar:$LIB_DIR/postgresql-42.7.1.jar" \
       -d $BUILD_DIR @sources.txt
 
 if [ $? -ne 0 ]; then

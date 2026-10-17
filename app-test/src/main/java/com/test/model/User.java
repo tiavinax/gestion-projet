@@ -1,9 +1,12 @@
 package com.test.model;
 
+import mg.itu.framework.MapFile;
+
 public class User {
     private int id;
     private String name;
     private String email;
+    private MapFile fichier;   
 
     public User() {
     }
@@ -22,4 +25,7 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public MapFile getFichier() { return fichier; }
+    public void setFichier(MapFile fichier) { this.fichier = fichier; }
 }

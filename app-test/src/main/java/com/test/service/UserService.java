@@ -19,9 +19,16 @@ public class UserService {
     public User getUserById(int id) {
         return userRepository.findById(id);
     }
-
-    // Sprint 7 
+    
     public void save(User user) {
         userRepository.save(user);
+    }
+    
+    public void update(User user) {
+        userRepository.update(user);
+    }
+    
+    public void delete(int id) {
+        userRepository.delete(id);
     }
 }

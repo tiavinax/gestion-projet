@@ -35,7 +35,7 @@ echo -e "${BLUE}[2/5] Compilation avec -parameters...${NC}"
 find $SRC_DIR -name "*.java" > sources.txt
 
 javac -parameters \
-      -cp "$LIB_DIR/framework-1.0.jar:$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar" \
+      -cp "$LIB_DIR/framework-1.0.jar:$LIB_DIR/servlet-api.jar:$LIB_DIR/gson-2.10.1.jar:$LIB_DIR/postgresql-42.7.1.jar" \
       -d $BUILD_DIR/WEB-INF/classes @sources.txt
 
 if [ $? -ne 0 ]; then
@@ -59,7 +59,8 @@ fi
 echo -e "${BLUE}[4/5] Copie des librairies...${NC}"
 cp $LIB_DIR/framework-1.0.jar $BUILD_DIR/WEB-INF/lib/
 cp $LIB_DIR/gson-2.10.1.jar $BUILD_DIR/WEB-INF/lib/
-cp $LIB_DIR/servlet-api.jar $BUILD_DIR/WEB-INF/lib/
+cp $LIB_DIR/postgresql-42.7.1.jar $BUILD_DIR/WEB-INF/lib/
+cp $LIB_DIR/org.osgi.core-6.0.0.jar $BUILD_DIR/WEB-INF/lib/
 
 # Créer le WAR
 echo -e "${BLUE}[5/5] Creation du WAR...${NC}"
