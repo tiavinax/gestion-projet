@@ -23,12 +23,10 @@ public class SessionController {
         
         // 2. Sauvegarder dans la session
         session.set("compteur", compteur);
-        session.set("derniere_visite", new Date().toString());
 
         // 3. Envoyer à la vue
         mv.addAttribute("compteur", compteur);
         mv.addAttribute("sessionId", session.getId());
-        mv.addAttribute("derniereVisite", session.get("derniere_visite", String.class));
         
         return mv;
     }

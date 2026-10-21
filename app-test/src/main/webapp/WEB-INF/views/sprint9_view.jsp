@@ -22,12 +22,7 @@
             
             <h3>Nombre de visites :</h3>
             <h2 style="color: #27ae60; font-size: 40px;"><%= request.getAttribute("compteur") %></h2>
-            
-            <h3>Dernière visite :</h3>
-            <p><%= request.getAttribute("derniereVisite") %></p>
         </div>
-        
-        <p><em>Rechargez cette page : le compteur augmente sans changer l'ID de session.</em></p>
         
         <a href="/app-test/sprint9" class="btn">Recharger</a>
         <a href="/app-test/sprint9/reset" class="btn btn-red">Réinitialiser la session</a>

@@ -9,7 +9,7 @@ import mg.itu.framework.Autowired;
 import mg.itu.framework.ApplicationContext;
 import jakarta.servlet.http.HttpServletRequest;
 import com.test.service.UserService;
-import com.test.model.User;      
+import com.test.model.User;
 
 import java.util.*;
 
@@ -148,23 +148,23 @@ public class SprintController {
         return mv;
     }
 
-     @RequestMapping(value = "/sprint5b", method = "GET")
+    @RequestMapping(value = "/sprint5b", method = "GET")
     public ModelView sprint5b(HttpServletRequest request) {
         ModelView mv = new ModelView("sprint5b");
-        
+
         ApplicationContext appCtx = (ApplicationContext) request.getServletContext()
-            .getAttribute("applicationContext");
-        
+                .getAttribute("applicationContext");
+
         //  CORRECTION : List<User> au lieu de List<String>
         List<User> users = userService.getAllUsers();
-        
+
         mv.addAttribute("users", users);
         mv.addAttribute("beans", appCtx.getBeans());
         mv.addAttribute("totalBeans", appCtx.getBeans().size());
         mv.addAttribute("serverTime", new Date());
         mv.addAttribute("sprintName", "SPRINT 5b - Repository + Spring Container");
         mv.addAttribute("sprintDesc", "Injection de dépendances avec ApplicationContext");
-        
+
         return mv;
     }
 }
