@@ -296,3 +296,17 @@ contenu : les bytes bruts du fichier
                         ▼
                     save(User user)  ← user.fichier est rempli
 
+SPRINT 9: GESTION DES SESSION (HttpSession)
+
+Framework : Class MySession (get(String key , Class<T> type)/set(string key, Object value))
+app-test : import mg.itu.framework.MySession;
+@UrlMapping 
+public ModelView sprint8(MySession session) {
+        ModelView mv = new ModelView("sprint5b");
+        List<User> users = session.get("users",User.class);
+        mv.addAttribute("users", users);
+    return mv;
+}
+
+Placer dans un contexte le map
+ l'instance du class pour avoir un instance par client mais pas par appel 

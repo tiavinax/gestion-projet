@@ -89,16 +89,16 @@ public class FrontController extends HttpServlet {
     }
 
     private boolean isStaticResource(String path) {
-        return path.endsWith(".html") ||
-                path.endsWith(".css") ||
-                path.endsWith(".js") ||
-                path.endsWith(".png") ||
-                path.endsWith(".jpg") ||
-                path.endsWith(".jpeg") ||
-                path.endsWith(".gif") ||
-                path.endsWith(".svg") ||
-                path.endsWith(".ico") ||
-                path.endsWith(".webp");
+        return path.endsWith(".html")
+                || path.endsWith(".css")
+                || path.endsWith(".js")
+                || path.endsWith(".png")
+                || path.endsWith(".jpg")
+                || path.endsWith(".jpeg")
+                || path.endsWith(".gif")
+                || path.endsWith(".svg")
+                || path.endsWith(".ico")
+                || path.endsWith(".webp");
     }
 
     private void handleNotFound(HttpServletRequest request, HttpServletResponse response,
@@ -130,14 +130,14 @@ public class FrontController extends HttpServlet {
         return methods;
     }
 
-     private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key)
+    private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key)
             throws ServletException, IOException {
 
         try {
             MethodInfo info = urlMapping.get(key);
             Method method = info.getMethod();
             Class<?> controllerClass = info.getControllerClass();
-            
+
             Object controller = applicationContext.getBean(controllerClass);
             if (controller == null) {
                 controller = controllerClass.getDeclaredConstructor().newInstance();
@@ -152,18 +152,18 @@ public class FrontController extends HttpServlet {
                 writeJsonResponse(response, result);
             } else if (result instanceof ModelView) {
                 ModelView mv = (ModelView) result;
-                
+
                 for (Map.Entry<String, Object> entry : mv.getData().entrySet()) {
                     request.setAttribute(entry.getKey(), entry.getValue());
                 }
-                
+
                 String viewPath = resolveView(mv.getViewName());
                 request.setAttribute("currentUrl", key.getUrl());
                 request.setAttribute("currentMethod", key.getMethod());
                 request.setAttribute("isError", false);
                 request.setAttribute("isSingle", true);
                 render(request, response, viewPath);
-                
+
             } else if (result instanceof String) {
                 String viewPath = resolveView((String) result);
                 request.setAttribute("currentUrl", key.getUrl());
@@ -171,7 +171,7 @@ public class FrontController extends HttpServlet {
                 request.setAttribute("isError", false);
                 request.setAttribute("isSingle", true);
                 render(request, response, viewPath);
-                
+
             } else {
                 writeRawResponse(response, key, info);
             }
@@ -187,228 +187,240 @@ public class FrontController extends HttpServlet {
     private void writeJsonResponse(HttpServletResponse response, Object data) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-        
+
         String json = gson.toJson(data);
-        
+
         PrintWriter out = response.getWriter();
         out.print(json);
         out.flush();
     }
 
     private Object invokeMethod(Object controller, Method method,
-        HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
-    Class<?>[] paramTypes = method.getParameterTypes();
-    java.lang.reflect.Parameter[] parameters = method.getParameters();
+        Class<?>[] paramTypes = method.getParameterTypes();
+        java.lang.reflect.Parameter[] parameters = method.getParameters();
 
-    if (paramTypes.length == 0) {
-        return method.invoke(controller);
-    }
-
-    Object[] args = new Object[paramTypes.length];
-
-    for (int i = 0; i < paramTypes.length; i++) {
-        Class<?> type = paramTypes[i];
-        String paramName = parameters[i].getName();
-
-        if (type.equals(HttpServletRequest.class)) {
-            args[i] = request;
-        } else if (type.equals(HttpServletResponse.class)) {
-            args[i] = response;
-        } else if (type.equals(MapFile.class)) {
-            // Sprint 8 : Binding MapFile (single)
-            args[i] = extractMapFile(request, paramName);
-        } else if (type.equals(MapFile[].class)) {
-            // Sprint 8 : Binding MapFile (multiple)
-            args[i] = extractMapFiles(request, paramName);
-        } else if (isSimpleType(type)) {
-            // Sprint 7 : Binding attribut
-            String value = request.getParameter(paramName);
-            args[i] = convertValue(value, type);
-        } else {
-            // Sprint 7b : Binding object
-            args[i] = bindObject(type, request);
+        if (paramTypes.length == 0) {
+            return method.invoke(controller);
         }
-    }
 
-    return method.invoke(controller, args);
-}
+        Object[] args = new Object[paramTypes.length];
 
-/**
- * Instancie un objet et remplit ses champs depuis la requête
- */
-private Object bindObject(Class<?> type, HttpServletRequest request) throws Exception {
-    Object obj = type.getDeclaredConstructor().newInstance();
+        for (int i = 0; i < paramTypes.length; i++) {
+            Class<?> type = paramTypes[i];
+            String paramName = parameters[i].getName();
 
-    java.lang.reflect.Field[] fields = type.getDeclaredFields();
-    for (java.lang.reflect.Field field : fields) {
-        String fieldName = field.getName();
-        field.setAccessible(true);
-
-        if (field.getType().equals(MapFile.class)) {
-            // Sprint 8 : Champ MapFile dans un objet
-            MapFile mf = extractMapFile(request, fieldName);
-            if (mf != null) {
-                field.set(obj, mf);
-            }
-        } else if (field.getType().equals(MapFile[].class)) {
-            MapFile[] mfs = extractMapFiles(request, fieldName);
-            if (mfs != null && mfs.length > 0) {
-                field.set(obj, mfs);
-            }
-        } else {
-            // Binding classique
-            String value = request.getParameter(fieldName);
-            if (value != null) {
-                Object converted = convertValue(value, field.getType());
-                field.set(obj, converted);
+            if (type.equals(HttpServletRequest.class)) {
+                args[i] = request;
+            } else if (type.equals(HttpServletResponse.class)) {
+                args[i] = response;
+            } else if (type.equals(MySession.class)) {
+                // Injection de MySession
+                args[i] = new MySession(request.getSession());
+            } else if (type.equals(MapFile.class)) {
+                // Sprint 8 : Binding MapFile (multiple)
+                args[i] = extractMapFiles(request, paramName);
+            } else if (isSimpleType(type)) {
+                // Sprint 7 : Binding attribut
+                String value = request.getParameter(paramName);
+                args[i] = convertValue(value, type);
+            } else {
+                // Sprint 7b : Binding object
+                args[i] = bindObject(type, request);
             }
         }
+
+        return method.invoke(controller, args);
     }
 
-    return obj;
-}
+    /**
+     * Instancie un objet et remplit ses champs depuis la requête
+     */
+    private Object bindObject(Class<?> type, HttpServletRequest request) throws Exception {
+        Object obj = type.getDeclaredConstructor().newInstance();
 
-/**
- * Extrait un fichier uploadé et le convertit en MapFile
- */
-private MapFile extractMapFile(HttpServletRequest request, String name) throws Exception {
-    try {
-        jakarta.servlet.http.Part part = request.getPart(name);
-        if (part == null || part.getSize() == 0) {
-            return null;
-        }
+        java.lang.reflect.Field[] fields = type.getDeclaredFields();
+        for (java.lang.reflect.Field field : fields) {
+            String fieldName = field.getName();
+            field.setAccessible(true);
 
-        MapFile mf = new MapFile();
-        String submittedName = part.getSubmittedFileName();
-        
-        if (submittedName == null || submittedName.isEmpty()) {
-            return null;
-        }
-        
-        mf.setFileName(submittedName);
-        mf.setExtension(getExtension(submittedName));
-        
-        try (java.io.InputStream is = part.getInputStream()) {
-            mf.setContenu(readAllBytes(is));
-        }
-        
-        return mf;
-        
-    } catch (Exception e) {
-        return null;
-    }
-}
-
-/**
- * Extrait plusieurs fichiers uploadés
- */
-private MapFile[] extractMapFiles(HttpServletRequest request, String name) throws Exception {
-    try {
-        java.util.Collection<jakarta.servlet.http.Part> parts = request.getParts();
-        java.util.List<MapFile> result = new java.util.ArrayList<>();
-        
-        for (jakarta.servlet.http.Part part : parts) {
-            if (part.getName().equals(name) && part.getSize() > 0) {
-                String submittedName = part.getSubmittedFileName();
-                if (submittedName != null && !submittedName.isEmpty()) {
-                    MapFile mf = new MapFile();
-                    mf.setFileName(submittedName);
-                    mf.setExtension(getExtension(submittedName));
-                    try (java.io.InputStream is = part.getInputStream()) {
-                        mf.setContenu(readAllBytes(is));
-                    }
-                    result.add(mf);
+            if (field.getType().equals(MapFile.class)) {
+                // Sprint 8 : Champ MapFile dans un objet
+                MapFile mf = extractMapFile(request, fieldName);
+                if (mf != null) {
+                    field.set(obj, mf);
+                }
+            } else if (field.getType().equals(MapFile[].class)) {
+                MapFile[] mfs = extractMapFiles(request, fieldName);
+                if (mfs != null && mfs.length > 0) {
+                    field.set(obj, mfs);
+                }
+            } else {
+                // Binding classique
+                String value = request.getParameter(fieldName);
+                if (value != null) {
+                    Object converted = convertValue(value, field.getType());
+                    field.set(obj, converted);
                 }
             }
         }
-        
-        return result.isEmpty() ? null : result.toArray(new MapFile[0]);
-        
-    } catch (Exception e) {
-        return null;
-    }
-}
 
-/**
- * Lit tous les bytes d'un InputStream (compatible Java 8)
- */
-private byte[] readAllBytes(InputStream is) throws java.io.IOException {
-    java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
-    byte[] data = new byte[4096];
-    int bytesRead;
-    while ((bytesRead = is.read(data, 0, data.length)) != -1) {
-        buffer.write(data, 0, bytesRead);
-    }
-    buffer.flush();
-    return buffer.toByteArray();
-}
-
-/**
- * Extrait l'extension d'un nom de fichier
- */
-private String getExtension(String fileName) {
-    if (fileName == null) return "";
-    int dotIndex = fileName.lastIndexOf('.');
-    if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
-        return fileName.substring(dotIndex + 1).toLowerCase();
-    }
-    return "";
-}
-
-/**
- * Vérifie si le type est un type simple (primitif, String, wrapper)
- */
-private boolean isSimpleType(Class<?> type) {
-    return type.equals(String.class)
-        || type.equals(int.class) || type.equals(Integer.class)
-        || type.equals(long.class) || type.equals(Long.class)
-        || type.equals(double.class) || type.equals(Double.class)
-        || type.equals(float.class) || type.equals(Float.class)
-        || type.equals(boolean.class) || type.equals(Boolean.class)
-        || type.equals(java.util.Date.class);
-}
-
-/**
- * Convertit une valeur String vers le type cible
- */
-private Object convertValue(String value, Class<?> type) {
-    if (value == null || value.isEmpty()) {
-        return getDefaultValue(type);
+        return obj;
     }
 
-    if (type.equals(String.class)) {
-        return value;
-    } else if (type.equals(int.class) || type.equals(Integer.class)) {
-        return Integer.parseInt(value);
-    } else if (type.equals(long.class) || type.equals(Long.class)) {
-        return Long.parseLong(value);
-    } else if (type.equals(double.class) || type.equals(Double.class)) {
-        return Double.parseDouble(value);
-    } else if (type.equals(float.class) || type.equals(Float.class)) {
-        return Float.parseFloat(value);
-    } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
-        return Boolean.parseBoolean(value);
-    } else if (type.equals(java.util.Date.class)) {
+    /**
+     * Extrait un fichier uploadé et le convertit en MapFile
+     */
+    private MapFile extractMapFile(HttpServletRequest request, String name) throws Exception {
         try {
-            return new java.text.SimpleDateFormat("yyyy-MM-dd").parse(value);
+            jakarta.servlet.http.Part part = request.getPart(name);
+            if (part == null || part.getSize() == 0) {
+                return null;
+            }
+
+            MapFile mf = new MapFile();
+            String submittedName = part.getSubmittedFileName();
+
+            if (submittedName == null || submittedName.isEmpty()) {
+                return null;
+            }
+
+            mf.setFileName(submittedName);
+            mf.setExtension(getExtension(submittedName));
+
+            try (java.io.InputStream is = part.getInputStream()) {
+                mf.setContenu(readAllBytes(is));
+            }
+
+            return mf;
+
         } catch (Exception e) {
             return null;
         }
     }
 
-    return null;
-}
+    /**
+     * Extrait plusieurs fichiers uploadés
+     */
+    private MapFile[] extractMapFiles(HttpServletRequest request, String name) throws Exception {
+        try {
+            java.util.Collection<jakarta.servlet.http.Part> parts = request.getParts();
+            java.util.List<MapFile> result = new java.util.ArrayList<>();
 
-private Object getDefaultValue(Class<?> type) {
-    if (type.equals(int.class)) return 0;
-    if (type.equals(long.class)) return 0L;
-    if (type.equals(double.class)) return 0.0;
-    if (type.equals(float.class)) return 0.0f;
-    if (type.equals(boolean.class)) return false;
-    return null;
-}
+            for (jakarta.servlet.http.Part part : parts) {
+                if (part.getName().equals(name) && part.getSize() > 0) {
+                    String submittedName = part.getSubmittedFileName();
+                    if (submittedName != null && !submittedName.isEmpty()) {
+                        MapFile mf = new MapFile();
+                        mf.setFileName(submittedName);
+                        mf.setExtension(getExtension(submittedName));
+                        try (java.io.InputStream is = part.getInputStream()) {
+                            mf.setContenu(readAllBytes(is));
+                        }
+                        result.add(mf);
+                    }
+                }
+            }
+
+            return result.isEmpty() ? null : result.toArray(new MapFile[0]);
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Lit tous les bytes d'un InputStream (compatible Java 8)
+     */
+    private byte[] readAllBytes(InputStream is) throws java.io.IOException {
+        java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+        byte[] data = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, bytesRead);
+        }
+        buffer.flush();
+        return buffer.toByteArray();
+    }
+
+    /**
+     * Extrait l'extension d'un nom de fichier
+     */
+    private String getExtension(String fileName) {
+        if (fileName == null) {
+            return "";
+        }
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            return fileName.substring(dotIndex + 1).toLowerCase();
+        }
+        return "";
+    }
+
+    /**
+     * Vérifie si le type est un type simple (primitif, String, wrapper)
+     */
+    private boolean isSimpleType(Class<?> type) {
+        return type.equals(String.class)
+                || type.equals(int.class) || type.equals(Integer.class)
+                || type.equals(long.class) || type.equals(Long.class)
+                || type.equals(double.class) || type.equals(Double.class)
+                || type.equals(float.class) || type.equals(Float.class)
+                || type.equals(boolean.class) || type.equals(Boolean.class)
+                || type.equals(java.util.Date.class);
+    }
+
+    /**
+     * Convertit une valeur String vers le type cible
+     */
+    private Object convertValue(String value, Class<?> type) {
+        if (value == null || value.isEmpty()) {
+            return getDefaultValue(type);
+        }
+
+        if (type.equals(String.class)) {
+            return value;
+        } else if (type.equals(int.class) || type.equals(Integer.class)) {
+            return Integer.parseInt(value);
+        } else if (type.equals(long.class) || type.equals(Long.class)) {
+            return Long.parseLong(value);
+        } else if (type.equals(double.class) || type.equals(Double.class)) {
+            return Double.parseDouble(value);
+        } else if (type.equals(float.class) || type.equals(Float.class)) {
+            return Float.parseFloat(value);
+        } else if (type.equals(boolean.class) || type.equals(Boolean.class)) {
+            return Boolean.parseBoolean(value);
+        } else if (type.equals(java.util.Date.class)) {
+            try {
+                return new java.text.SimpleDateFormat("yyyy-MM-dd").parse(value);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private Object getDefaultValue(Class<?> type) {
+        if (type.equals(int.class)) {
+            return 0;
+        }
+        if (type.equals(long.class)) {
+            return 0L;
+        }
+        if (type.equals(double.class)) {
+            return 0.0;
+        }
+        if (type.equals(float.class)) {
+            return 0.0f;
+        }
+        if (type.equals(boolean.class)) {
+            return false;
+        }
+        return null;
+    }
 
     private String resolveView(String viewName) {
         if (!viewName.startsWith("/")) {

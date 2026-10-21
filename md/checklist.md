@@ -203,3 +203,11 @@ des paramètres de la requête HTTP.
 - [ok] 7. Créer sprint8_form.jsp
 - [ok] 8. Créer sprint8_result.jsp
 - [ok] 9. Bouton dans index.jsp
+
+# SPRINT 9 - Gestion des sessions (MySession)
+
+## Tâches
+- [ ] 1. Créer la classe MySession (get, set + autres)
+- [ ] 2. Modifier FrontController (injecter MySession)
+- [ ] 3. Créer un SessionController pour tester
+- [ ] 4. Créer la page sprint9.jsp
