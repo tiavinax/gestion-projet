@@ -169,6 +169,11 @@
                 Upload File
                 <span class="label">MapFile</span>
             </a>
+            <a href="/app-test/sprint9" class="sprint-btn">
+                <span class="num">9</span>
+                Test Session
+                <span class="label">Session Test</span>
+            </a>
         </div>
 
         <p class="status">Framework operationnel — Tous les sprints sont disponibles</p>

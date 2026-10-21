@@ -310,3 +310,9 @@ public ModelView sprint8(MySession session) {
 
 Placer dans un contexte le map
  l'instance du class pour avoir un instance par client mais pas par appel 
+
+SPRINT 10: GESTION DE ROLE
+La personne doit etre connecter pour executer une methode ou action (Methode Cote app-test)
+
+SPRINT 10b : GESTION DE ROLE SPECIFIQUE
+La personne doit etre connecter(avec un role specifique (ex : admin)) pour executer une methode ou action (Methode Cote app-test)
