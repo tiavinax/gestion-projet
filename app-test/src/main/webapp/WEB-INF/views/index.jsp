@@ -157,7 +157,7 @@
             <a href="/app-test/sprint7" class="sprint-btn">
                 <span class="num">7</span>
                 Binding
-                <span class="label">Formulaire → Paramètres</span>
+                <span class="label">Formulaire → Parametres</span>
             </a>
             <a href="/app-test/sprint7b" class="sprint-btn">
                 <span class="num">7b</span>
@@ -173,6 +173,11 @@
                 <span class="num">9</span>
                 Test Session
                 <span class="label">Session Test</span>
+            </a>
+            <a href="/app-test/login" class="sprint-btn">
+                <span class="num">10</span>
+                Authentification
+                <span class="label">S'authentifier</span>
             </a>
         </div>
 

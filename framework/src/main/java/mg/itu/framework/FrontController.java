@@ -131,55 +131,88 @@ public class FrontController extends HttpServlet {
     }
 
     private void executeMethod(HttpServletRequest request, HttpServletResponse response, UrlMethod key)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
 
-        try {
-            MethodInfo info = urlMapping.get(key);
-            Method method = info.getMethod();
-            Class<?> controllerClass = info.getControllerClass();
+    try {
+        MethodInfo info = urlMapping.get(key);
+        Method method = info.getMethod();
+        Class<?> controllerClass = info.getControllerClass();
 
-            Object controller = applicationContext.getBean(controllerClass);
-            if (controller == null) {
-                controller = controllerClass.getDeclaredConstructor().newInstance();
-            }
-
-            Object result = invokeMethod(controller, method, request, response);
-
-            // ============================================
-            // SPRINT 6 : Détection @WebAPI
-            // ============================================
-            if (method.isAnnotationPresent(WebAPI.class)) {
-                writeJsonResponse(response, result);
-            } else if (result instanceof ModelView) {
-                ModelView mv = (ModelView) result;
-
-                for (Map.Entry<String, Object> entry : mv.getData().entrySet()) {
-                    request.setAttribute(entry.getKey(), entry.getValue());
-                }
-
-                String viewPath = resolveView(mv.getViewName());
-                request.setAttribute("currentUrl", key.getUrl());
-                request.setAttribute("currentMethod", key.getMethod());
-                request.setAttribute("isError", false);
-                request.setAttribute("isSingle", true);
-                render(request, response, viewPath);
-
-            } else if (result instanceof String) {
-                String viewPath = resolveView((String) result);
-                request.setAttribute("currentUrl", key.getUrl());
-                request.setAttribute("currentMethod", key.getMethod());
-                request.setAttribute("isError", false);
-                request.setAttribute("isSingle", true);
-                render(request, response, viewPath);
-
-            } else {
-                writeRawResponse(response, key, info);
-            }
-
-        } catch (Exception e) {
-            throw new ServletException("Erreur lors de l'execution du controleur", e);
+        Object controller = applicationContext.getBean(controllerClass);
+        if (controller == null) {
+            controller = controllerClass.getDeclaredConstructor().newInstance();
         }
+
+        // ============================================
+        // SPRINT 10 & 10b : VÉRIFICATION DES ACCÈS
+        // ============================================
+        MySession mySession = new MySession(request.getSession());
+
+        // 1. Vérifier l'annotation @Auth (utilisateur connecté)
+        if (method.isAnnotationPresent(Auth.class)) {
+            String user = mySession.get("user", String.class);
+            if (user == null) {
+                // Rediriger vers la page de login avec un message
+                request.setAttribute("error", "Accès refusé : Vous devez être connecté.");
+                render(request, response, "/WEB-INF/views/login.jsp");
+                return;
+            }
+        }
+
+        // 2. Vérifier l'annotation @Role (rôle spécifique)
+        if (method.isAnnotationPresent(Role.class)) {
+            Role roleAnnotation = method.getAnnotation(Role.class);
+            String requiredRole = roleAnnotation.value();
+            
+            String userRole = mySession.get("role", String.class);
+            if (userRole == null || !userRole.equals(requiredRole)) {
+                // Rediriger vers une page d'erreur 403 (Accès refusé)
+                request.setAttribute("error", "Accès refusé : Rôle " + requiredRole + " requis.");
+                render(request, response, "/WEB-INF/views/error_403.jsp");
+                return;
+            }
+        }
+
+        // ============================================
+        // EXÉCUTION DE LA MÉTHODE
+        // ============================================
+        Object result = invokeMethod(controller, method, request, response);
+
+        // ============================================
+        // SPRINT 6 : Détection @WebAPI
+        // ============================================
+        if (method.isAnnotationPresent(WebAPI.class)) {
+            writeJsonResponse(response, result);
+        } else if (result instanceof ModelView) {
+            ModelView mv = (ModelView) result;
+
+            for (Map.Entry<String, Object> entry : mv.getData().entrySet()) {
+                request.setAttribute(entry.getKey(), entry.getValue());
+            }
+
+            String viewPath = resolveView(mv.getViewName());
+            request.setAttribute("currentUrl", key.getUrl());
+            request.setAttribute("currentMethod", key.getMethod());
+            request.setAttribute("isError", false);
+            request.setAttribute("isSingle", true);
+            render(request, response, viewPath);
+
+        } else if (result instanceof String) {
+            String viewPath = resolveView((String) result);
+            request.setAttribute("currentUrl", key.getUrl());
+            request.setAttribute("currentMethod", key.getMethod());
+            request.setAttribute("isError", false);
+            request.setAttribute("isSingle", true);
+            render(request, response, viewPath);
+
+        } else {
+            writeRawResponse(response, key, info);
+        }
+
+    } catch (Exception e) {
+        throw new ServletException("Erreur lors de l'execution du controleur", e);
     }
+}
 
     // ============================================
     // SPRINT 6 : Ecriture du JSON
@@ -234,6 +267,8 @@ public class FrontController extends HttpServlet {
 
         return method.invoke(controller, args);
     }
+
+    
 
     /**
      * Instancie un objet et remplit ses champs depuis la requête

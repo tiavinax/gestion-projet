@@ -207,7 +207,14 @@ des paramètres de la requête HTTP.
 # SPRINT 9 - Gestion des sessions (MySession)
 
 ## Tâches
-- [ ] 1. Créer la classe MySession (get, set + autres)
-- [ ] 2. Modifier FrontController (injecter MySession)
-- [ ] 3. Créer un SessionController pour tester
-- [ ] 4. Créer la page sprint9.jsp
+- [ok] 1. Créer la classe MySession (get, set + autres)
+- [ok] 2. Modifier FrontController (injecter MySession)
+- [ok] 3. Créer un SessionController pour tester
+- [ok] 4. Créer la page sprint9.jsp
+
+# Tâches
+- [ok] 1. Créer l'annotation @Authentification
+- [ok] 2. Créer l'annotation @Auth (avec attribut role)
+- [ok] 3. Modifier FrontController pour vérifier les annotations
+- [ok] 4. Modifier AuthController (ajouter le rôle au login)
+- [ok] 5. Modifier SecureController (utiliser les annotations)

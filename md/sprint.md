@@ -313,6 +313,11 @@ Placer dans un contexte le map
 
 SPRINT 10: GESTION DE ROLE
 La personne doit etre connecter pour executer une methode ou action (Methode Cote app-test)
+Creer un variable et stocker dans le session et verifier si cette nom de variable existe 
 
 SPRINT 10b : GESTION DE ROLE SPECIFIQUE
 La personne doit etre connecter(avec un role specifique (ex : admin)) pour executer une methode ou action (Methode Cote app-test)
+
+Stocker un variable qui contient le role de l'user connecter ex role = "admin" dans le session  
+
+N.B : les nom des deux variable doit etre identique
