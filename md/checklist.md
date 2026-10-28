@@ -212,9 +212,30 @@ des paramètres de la requête HTTP.
 - [ok] 3. Créer un SessionController pour tester
 - [ok] 4. Créer la page sprint9.jsp
 
+# SPRINT 10 - Gestion de rôle (Être connecté)
+
 # Tâches
 - [ok] 1. Créer l'annotation @Authentification
 - [ok] 2. Créer l'annotation @Auth (avec attribut role)
 - [ok] 3. Modifier FrontController pour vérifier les annotations
 - [ok] 4. Modifier AuthController (ajouter le rôle au login)
 - [ok] 5. Modifier SecureController (utiliser les annotations)
+
+# SPRINT 10b - Gestion de rôle spécifique (@Role)
+
+## Objectif
+Restreindre l'accès à certaines méthodes uniquement aux utilisateurs possédant un rôle spécifique (ex: "admin").
+
+## Tâches
+- [ok] 1. Créer l'annotation @Role dans le framework
+- [ok] 2. Modifier FrontController pour vérifier @Role
+- [ok] 3. Mettre à jour AuthController (ajouter le rôle dans la session lors du login)
+- [ok] 4. Ajouter la méthode annotée @Role dans SecureController
+- [ok] 5. Créer les pages JSP (admin_dashboard.jsp, error_403.jsp)
+- [ok] 6. Tester avec un utilisateur normal (doit être bloqué)
+- [ok] 7. Tester avec un administrateur (doit passer)
+
+## Structure
+- @Role("admin") → Vérifie si session.get("role").equals("admin")
+- Si non → Redirection vers error_403.jsp
+- Si oui → Exécution de la méthode

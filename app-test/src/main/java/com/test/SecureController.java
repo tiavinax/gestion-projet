@@ -21,4 +21,14 @@ public class SecureController {
         return mv;
     }
 
+    // SPRINT 10b : Annotation @Role
+    @Role("admin")
+    @RequestMapping(value = "/admin/dashboard", method = "GET")
+    public ModelView adminDashboard(MySession session) {
+        String user = session.get("user", String.class);
+        ModelView mv = new ModelView("admin_dashboard");
+        mv.addAttribute("user", user);
+        return mv;
+    }
+
 }
