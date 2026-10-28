@@ -321,3 +321,6 @@ La personne doit etre connecter(avec un role specifique (ex : admin)) pour execu
 Stocker un variable qui contient le role de l'user connecter ex role = "admin" dans le session  
 
 N.B : les nom des deux variable doit etre identique
+
+SPRINT 11 : le controller doit etre Singleton , un seul instance du controlleur 
+Est ce qu'on a deja fait cela ou pas ??

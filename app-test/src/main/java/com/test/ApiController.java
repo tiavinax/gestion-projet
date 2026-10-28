@@ -9,6 +9,7 @@ import com.test.service.UserService;
 import com.test.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
+import mg.itu.framework.Auth;
 
 @Controller
 public class ApiController {
